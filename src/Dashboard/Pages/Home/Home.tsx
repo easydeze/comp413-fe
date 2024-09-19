@@ -1,14 +1,14 @@
-import RecentMovements from "./RecentMovements";
+import Movements from "./Movements";
 import Balance from "./Balance";
 
 export default function Home() {
   return (
     <>
       <h2>Home</h2>
-      {/* <div className="home">
-        <RecentMovements />
+      <div className="home">
         <Balance />
-      </div> */}
+        <Movements />
+      </div>
     </>
   );
 }
