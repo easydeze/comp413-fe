@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { useState } from "react";
 import "../style.css";
 import Home from "./Pages/Home/Home";
 import Activity from "./Pages/Activity";
@@ -36,7 +35,6 @@ const Dashboard: React.FC = () => {
     setUsername(name);
     setLoginScreen(false);
   };
-
 
   return (
     <>
