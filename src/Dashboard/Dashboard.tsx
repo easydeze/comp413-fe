@@ -1,14 +1,16 @@
+import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { useState } from "react";
-import "../style.css";
 import Home from "./Pages/Home";
 import Activity from "./Pages/Activity";
 import BuySell from "./Pages/BuySell";
+import Login from "../Login/Login";
 
-export default function Dashboard() {
+const Dashboard: React.FC = () => {
   const [selectView, setSelectView] = useState("Home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loginScreen, setLoginScreen] = useState(true);
+  const [username, setUsername] = useState("");
 
   const handleView = (view: string) => {
     setSelectView(view);
@@ -18,9 +20,29 @@ export default function Dashboard() {
     setSidebarOpen(newOpen);
   };
 
+  const toggleLogin = (value: boolean) => {
+    setLoginScreen(value);
+  };
+
+  const handleLogout = () => {
+    setLoginScreen(true);
+    setSelectView("Home");
+    setUsername(""); // Clear username on logout
+  };
+
+  const handleLogin = (name: string) => {
+    setUsername(name);
+    setLoginScreen(false);
+  };
+
+
   return (
     <>
-      <Header toggleSidebar={() => toggleSidebar(true)} />
+      <Header
+        toggleSidebar={() => toggleSidebar(true)}
+        username={username}
+        handleLogout={handleLogout}
+      />
       <div id="contentContainer">
         {selectView === "Home" ? (
           <Home />
@@ -34,7 +56,12 @@ export default function Dashboard() {
         open={sidebarOpen}
         handleView={handleView}
         toggleSidebar={toggleSidebar}
+        handleLogout={handleLogout}
+        username={username}
       />
+      {loginScreen && <Login toggleLogin={toggleLogin} onLogin={handleLogin} />}
     </>
   );
-}
+};
+
+export default Dashboard;
