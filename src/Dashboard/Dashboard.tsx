@@ -2,7 +2,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { useState } from "react";
 import "../style.css";
-import Home from "./Pages/Home";
+import Home from "./Pages/Home/Home";
 import Activity from "./Pages/Activity";
 import BuySell from "./Pages/BuySell";
 
