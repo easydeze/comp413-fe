@@ -12,7 +12,7 @@ export default function Balance() {
               data: [2, 5.5, 2, 8.5, 1.5, 5],
             },
           ]}
-          height={700}
+          height={600}
           width={1200}
         />
       </div>
