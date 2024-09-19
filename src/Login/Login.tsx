@@ -33,48 +33,48 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
             height: 100%;
             z-index: 1;
             background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
 
           .modal-content {
             display: flex;
             flex-direction: column;
-            position: absolute;
-            align-items: center;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 5%;
-            width: 25%;
-            background-color: #fff;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            gap: 10px;
-            text-align: center;
-          }
-
-          #login {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            width: 400px;
+            gap: 20px;
           }
 
           .input-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
             gap: 10px;
           }
 
           input {
             padding: 10px;
             font-size: 1rem;
-            border: 1px solid #ccc;
+            border: none; /* Remove border */
             border-radius: 5px;
+            background-color: #ffffff; /* Light gray background */
             width: 100%;
-            max-width: 200px;
+            max-width: 300px;
+            outline: none; /* Remove outline */
+          }
+
+          .button-container {
+            display: flex;
+            justify-content: flex-end;
           }
 
           #login-button {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
+            padding: 8px 8px;
           }
 
           #login-button:hover {
@@ -85,7 +85,7 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
 
       <main id="login-modal" className="modal">
         <Box className="modal-content">
-          <div className="input-container"> 
+          <div className="input-container">
             <input
               id="username"
               type="text"
@@ -99,15 +99,17 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
               }}
               required
             />
+            {error && <Typography color="error">{error}</Typography>}
           </div>
-          {error && <Typography color="error">{error}</Typography>} {/* Display error message */}
-          <Button
-            id="login-button"
-            onClick={handleLogin}
-            disabled={!username.trim()} // Disable button if username is empty
-          >
-            Login
-          </Button>
+          <div className="button-container">
+            <Button
+              id="login-button"
+              onClick={handleLogin}
+              disabled={!username.trim()}
+            >
+              Login
+            </Button>
+          </div>
         </Box>
       </main>
     </>

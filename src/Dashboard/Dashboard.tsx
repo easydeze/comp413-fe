@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
       <Header
         toggleSidebar={() => toggleSidebar(true)}
         username={username}
-        handleLogout={handleLogout}
+        // handleLogout={handleLogout}
       />
       <div id="contentContainer">
         {selectView === "Home" ? (
