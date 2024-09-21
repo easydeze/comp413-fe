@@ -97,6 +97,11 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
                   setError(""); // Clear error when username is valid
                 }
               }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && username.trim() !== "") {
+                  handleLogin();
+                }
+              }}
               required
             />
             {error && <Typography color="error">{error}</Typography>}
