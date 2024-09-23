@@ -16,7 +16,7 @@ h1 {
 
 #contentContainer {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         flex-grow: 1;
         overflow: hidden;
         margin-right: 250px;
@@ -38,4 +38,6 @@ header {
         flex-grow: 1;
         overflow: hidden;
 }
+
+
       
