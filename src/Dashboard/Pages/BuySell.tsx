@@ -1,8 +1,7 @@
-import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, Input, TextField } from "@mui/material";
-import StockSidebar from "../../Buy-Sell/Sidebar";
-import { Label } from "@mui/icons-material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input} from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
+import { log } from "console";
 
 
 export default function BuySell() {
@@ -10,11 +9,9 @@ export default function BuySell() {
 
   const handleClickOpen = () => {
     setOpen(true);
-  }
+  };
 
-  const handleClose = () => {
-    setOpen(false);
-  }
+  console
 
   return (
     <Box display="flex" flexDirection="column" alignItems="start">
@@ -26,24 +23,36 @@ export default function BuySell() {
           <Button>Sell</Button>
           <Input placeholder="Enter Number of Stocks to buy/sell"></Input>
         </Box>
-        <Button onClick={() => (
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirm Order?"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to confirm this order? Once initiated, it cannot be undone.
-              </DialogContentText>
-            </DialogContent>
-          </Dialog>
-        )}>View Order</Button>
+        <Button>View Order</Button>
       </Box>
     </Box>
   );
+}
+
+function showComfirmation() {
+  const [open, setOpen] = React.useState(false);
+
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog open={open} onClose={() => log("Confirmation of Order Completed")}>
+        <DialogTitle>
+          {"Confirm Order?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Once the order is placed, nothing can stop it.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose} autoFocus>Agree</Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  )
 }
