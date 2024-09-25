@@ -1,17 +1,23 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input} from "@mui/material";
-import { Box } from "@mui/system";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, Modal, Typography } from "@mui/material";
+import { Box, style } from "@mui/system";
+import { OrderDialog } from "../../Buy-Sell/Search";
 import React from "react";
 import { log } from "console";
 
 
 export default function BuySell() {
-  const [open, setOpen] = React.useState(false);
+  const [isShown, setIsShown] = React.useState(false);
+  const MODE = "BUY";
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleBuyClick = () => {
+    setIsShown(true);
   };
 
-  console
+  const handleConfirmClick = () => {
+    setIsShown(true);
+  };
+
+  const handleClose = () => setIsShown(false);
 
   return (
     <Box display="flex" flexDirection="column" alignItems="start">
@@ -19,40 +25,66 @@ export default function BuySell() {
       <Box display="flex" flexDirection="column" alignItems="start">
         <Input placeholder="Enter Ticker Symbol" />
         <Box display="flex" flexDirection="row" alignItems="start">
-          <Button>Buy</Button>
-          <Button>Sell</Button>
-          <Input placeholder="Enter Number of Stocks to buy/sell"></Input>
+          <Button onClick={handleBuyClick}>Buy</Button>
+          {
+            isShown && (
+              <Input placeholder="Buy #"></Input>
+            )
+          }
+          <Button onClick={handleBuyClick}>Sell</Button>
+          {
+            !isShown && (
+              <Input placeholder="Sell #"></Input>
+            )
+          }
+
         </Box>
-        <Button>View Order</Button>
+        <Button onClick={handleConfirmClick}>View Order</Button>
+        <Modal
+          open={isShown}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Order Summary
+            </Typography>
+            <Typography id="modal-modal-descr-mode" sx={{ mt: 2 }}>
+              Order Mode: {MODE}
+            </Typography>
+            <Typography id="modal-modal-descr-total" sx={{ mt: 2 }}>
+              Total Number of Stocks: {1}
+            </Typography>
+          </Box>
+        </Modal>
       </Box>
     </Box>
   );
 }
 
-function showComfirmation() {
-  const [open, setOpen] = React.useState(false);
+// function showComfirmation() {
 
 
-  const handleClose = () => {
-    setOpen(false);
-  }
+//   const handleClose = () => {
+//   }
 
-  return (
-    <React.Fragment>
-      <Dialog open={open} onClose={() => log("Confirmation of Order Completed")}>
-        <DialogTitle>
-          {"Confirm Order?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Once the order is placed, nothing can stop it.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose} autoFocus>Agree</Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
-  )
-}
+//   return (
+//     <React.Fragment>
+//       <Dialog open={true} onClose={() => log("Confirmation of Order Completed")}>
+//         <DialogTitle>
+//           {"Confirm Order?"}
+//         </DialogTitle>
+//         <DialogContent>
+//           <DialogContentText>
+//             Once the order is placed, nothing can stop it.
+//           </DialogContentText>
+//         </DialogContent>
+//         <DialogActions>
+//           <Button onClick={handleClose}>Cancel</Button>
+//           <Button onClick={handleClose} autoFocus>Agree</Button>
+//         </DialogActions>
+//       </Dialog>
+//     </React.Fragment>
+//   )
+// }
