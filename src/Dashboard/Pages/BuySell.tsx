@@ -7,9 +7,15 @@ import { log } from "console";
 
 export default function BuySell() {
   const [isShown, setIsShown] = React.useState(false);
-  const MODE = "BUY";
+  const [mode, setMode] = React.useState("NONE");
 
   const handleBuyClick = () => {
+    setMode("BUY");
+    setIsShown(true);
+  };
+
+  const handleSellClick = () => {
+    setMode("SELL");
     setIsShown(true);
   };
 
@@ -31,7 +37,7 @@ export default function BuySell() {
               <Input placeholder="Buy #"></Input>
             )
           }
-          <Button onClick={handleBuyClick}>Sell</Button>
+          <Button onClick={handleSellClick}>Sell</Button>
           {
             !isShown && (
               <Input placeholder="Sell #"></Input>
@@ -51,7 +57,7 @@ export default function BuySell() {
               Order Summary
             </Typography>
             <Typography id="modal-modal-descr-mode" sx={{ mt: 2 }}>
-              Order Mode: {MODE}
+              Order Mode: {mode}
             </Typography>
             <Typography id="modal-modal-descr-total" sx={{ mt: 2 }}>
               Total Number of Stocks: {1}
