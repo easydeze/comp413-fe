@@ -41,7 +41,6 @@ export const config = {
          */
         ['/about/:path*',
             '/dashboard/:path*'
-
         ],
     ],
 }
