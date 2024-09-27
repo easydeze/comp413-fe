@@ -1,5 +1,5 @@
-import { Label } from "@mui/icons-material";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Input, Modal, Typography } from "@mui/material";
+
+import { Button, Input, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
@@ -9,7 +9,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
-  bgcolor: "white",//'background.paper',
+  bgcolor: "white",
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
@@ -36,7 +36,12 @@ export default function BuySell() {
   }
 
   const handleConfirmClick = () => {
-    setIsShown(true);
+    if(ticker!=="" && numStocks!=="" && mode!=="NONE"){
+      setIsShown(true);
+    }else{
+      alert("Enter all required fields.")
+    }
+    
   };
 
   const handleStockNumberChange = (event: { target: { value: string; }; }) => {
@@ -51,7 +56,7 @@ export default function BuySell() {
     <Box display="flex" flexDirection="column" alignItems="start">
       <h2>Buy and Sell</h2>
       <Box display="flex" flexDirection="column" alignItems="start">
-        <Box display="flex" flexDirection="row" alignItems="start">
+        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
           <p>Ticker: </p>
           <Input id="stock-ticker" onChange={handleChange} placeholder="Enter Ticker Symbol" />
         </Box>
@@ -59,13 +64,13 @@ export default function BuySell() {
         <Box display="flex" flexDirection="row" alignItems="start">
           <Button onClick={handleBuyClick}>Buy</Button>
           {
-            mode == "BUY" && (
+            mode === "BUY" && (
               <Input onChange={handleStockNumberChange} placeholder="Buy #"></Input>
             )
           }
           <Button onClick={handleSellClick}>Sell</Button>
           {
-            mode == "SELL" && (
+            mode === "SELL" && (
               <Input onChange={handleStockNumberChange} placeholder="Sell #"  ></Input>
             )
           }
@@ -102,29 +107,3 @@ export default function BuySell() {
     </Box>
   );
 }
-
-// function showComfirmation() {
-
-
-//   const handleClose = () => {
-//   }
-
-//   return (
-//     <React.Fragment>
-//       <Dialog open={true} onClose={() => log("Confirmation of Order Completed")}>
-//         <DialogTitle>
-//           {"Confirm Order?"}
-//         </DialogTitle>
-//         <DialogContent>
-//           <DialogContentText>
-//             Once the order is placed, nothing can stop it.
-//           </DialogContentText>
-//         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={handleClose}>Cancel</Button>
-//           <Button onClick={handleClose} autoFocus>Agree</Button>
-//         </DialogActions>
-//       </Dialog>
-//     </React.Fragment>
-//   )
-// }
