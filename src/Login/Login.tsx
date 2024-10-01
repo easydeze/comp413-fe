@@ -3,21 +3,41 @@ import { Button, Box, Typography } from "@mui/material";
 
 interface LoginProps {
   toggleLogin: (value: boolean) => void;
-  onLogin: (username: string) => void; // Add onLogin prop
+  onLogin: (username: string, password: string) => void; // Update onLogin prop to include password
 }
 
 const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
   const [username, setUsername] = useState("");
-  const [error, setError] = useState(""); // State for error message
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // State for general error message
+  const [usernameError, setUsernameError] = useState(""); // State for username error message
+  const [passwordError, setPasswordError] = useState(""); // State for password error message
 
   const handleLogin = () => {
+    // Validate username
     if (username.trim() === "") {
-      setError("Username is required"); // Set error message if username is empty
-      return;
+      setUsernameError("Username is required");
+    } else {
+      setUsernameError("");
     }
-    onLogin(username); // Call the onLogin function
-    toggleLogin(false); // Close the login modal
-    setError(""); // Clear error on successful login
+
+    // Validate password
+    if (password.trim() === "") {
+      setPasswordError("Password is required");
+    } else {
+      setPasswordError("");
+    }
+
+    // If both fields are valid, proceed with login
+    if (username.trim() !== "" && password.trim() !== "") {
+      onLogin(username, password); // Call the onLogin function
+      toggleLogin(false); // Close the login modal
+      setUsername(""); // Clear username input
+      setPassword(""); // Clear password input
+      setUsernameError(""); // Clear username error
+      setPasswordError(""); // Clear password error
+      setError(""); // Clear general error
+    }
   };
 
   return (
@@ -94,23 +114,32 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
               onChange={(e) => {
                 setUsername(e.target.value);
                 if (e.target.value.trim() !== "") {
-                  setError(""); // Clear error when username is valid
-                }
-              }}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && username.trim() !== "") {
-                  handleLogin();
+                  setUsernameError(""); // Clear username error when username is valid
                 }
               }}
               required
             />
-            {error && <Typography color="error">{error}</Typography>}
+            {usernameError && <Typography color="error">{usernameError}</Typography>}
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (e.target.value.trim() !== "") {
+                  setPasswordError(""); // Clear password error when password is valid
+                }
+              }}
+              required
+            />
+            {passwordError && <Typography color="error">{passwordError}</Typography>}
           </div>
           <div className="button-container">
             <Button
               id="login-button"
               onClick={handleLogin}
-              disabled={!username.trim()}
+              disabled={!username.trim() || !password.trim()}
             >
               Login
             </Button>
