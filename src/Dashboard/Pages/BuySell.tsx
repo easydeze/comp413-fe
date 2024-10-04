@@ -3,6 +3,8 @@ import { Button, Input, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
+import {getMarketPrice} from "../../Model/BuySell_Model";
+
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -19,35 +21,47 @@ export default function BuySell() {
   const [isShown, setIsShown] = React.useState(false);
   const [mode, setMode] = React.useState("NONE");
   const [ticker, setTicker] = React.useState('');
-  const [numStocks, setStockAmount] = React.useState("");
+  const [numStocks, setStockAmount] = React.useState(0);
+  const [limitPrice, setLimitPrice] = React.useState(0);
+  let marketPrice = 0;
+
 
   const handleBuyClick = () => {
     setMode("BUY");
-    //setIsShown(true);
   };
 
   const handleSellClick = () => {
     setMode("SELL");
-    //setIsShown(true);
   };
 
-  const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setTicker(event.target.value);
+    getMarketPrice(ticker).then((r) => {
+      if(typeof r == 'number'){
+        marketPrice = r;
+      }else{
+        marketPrice = 0;
+      }
+    })
+  }
+
+  const handleLimitPriceChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    setLimitPrice(Number(event.target.value));
   }
 
   const handleConfirmClick = () => {
-    if(ticker!=="" && numStocks!=="" && mode!=="NONE"){
+    if (ticker !== "" && numStocks !== 0 && mode !== "NONE" && limitPrice !== 0) {
       setIsShown(true);
-    }else{
+    } else {
       alert("Enter all required fields.")
     }
-    
+
   };
 
   const handleStockNumberChange = (event: { target: { value: string; }; }) => {
     const result = event.target.value.replace(/\D/g, '');
 
-    setStockAmount(result);
+    setStockAmount(Number(result));
   };
 
   const handleClose = () => setIsShown(false);
@@ -58,7 +72,7 @@ export default function BuySell() {
       <Box display="flex" flexDirection="column" alignItems="start">
         <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
           <p>Ticker: </p>
-          <Input id="stock-ticker" onChange={handleChange} placeholder="Enter Ticker Symbol" />
+          <Input id="stock-ticker" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
         </Box>
 
         <Box display="flex" flexDirection="row" alignItems="start">
@@ -76,6 +90,13 @@ export default function BuySell() {
           }
 
         </Box>
+        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
+          <p>Market Price:: {marketPrice}</p>
+          <p>Limit Price:: </p>
+          <Input id="-desired-market-price" onChange={handleLimitPriceChange} placeholder="Enter Desired Price" />
+        </Box>
+
+
         <Button variant="contained" onClick={handleConfirmClick}>View Order</Button>
         {/* TODO:: Make this a DIALOG */}
         <Modal
@@ -94,8 +115,14 @@ export default function BuySell() {
             <Typography id="modal-modal-descr-mode" sx={{ mt: 2 }}>
               Ticker: {ticker}
             </Typography>
-            <Typography id="modal-modal-descr-total" sx={{ mt: 2 }}>
+            <Typography id="modal-modal-descr-totalStocks" sx={{ mt: 2 }}>
               Total Number of Stocks: {numStocks}
+            </Typography>
+            <Typography id="modal-modal-descr-marketPrice" sx={{ mt: 2 }}>
+              Limit Price: ${limitPrice}
+            </Typography>
+            <Typography id="modal-modal-descr-marketPrice" sx={{ mt: 2 }}>
+              Total Price: ${Number(limitPrice) * Number(numStocks)}
             </Typography>
             <Box display="flex" flexDirection="row">
               <Button variant="contained" autoFocus>Confirm</Button>
