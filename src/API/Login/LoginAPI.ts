@@ -1,6 +1,5 @@
 // This should be the url of backend or api gateway
 const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
-
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
