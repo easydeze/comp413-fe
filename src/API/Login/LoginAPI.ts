@@ -3,9 +3,13 @@ const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
+        const startTime = Date.now();
+        console.log(startTime)
         const response = await fetch(`${BASE_URL}${url}`, options);
+        const getTime = Date.now();
+        console.log(getTime);
         console.log(response);
-
+        console.log("response time: " +(getTime - startTime) );
         // Check if the response is okay (status 200-299)
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -26,7 +30,7 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to send login request
 export const loginHttp = async (username: string, password: string) => {
-    const response = await request("/login", {
+    const response = await request("/hello", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -36,6 +40,7 @@ export const loginHttp = async (username: string, password: string) => {
             username: {username},
             password: {password} }),
     });
+
     console.log(response);
     return response;
 };
