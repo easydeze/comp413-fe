@@ -3,7 +3,7 @@ import { Button, Input, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
-import {getMarketPrice} from "../../Model/BuySell_Model";
+import { getMarketPrice, makeOrder } from "../../Model/BuySell_Model";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -37,9 +37,9 @@ export default function BuySell() {
   const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setTicker(event.target.value);
     getMarketPrice(ticker).then((r) => {
-      if(typeof r == 'number'){
+      if (typeof r == 'number') {
         marketPrice = r;
-      }else{
+      } else {
         marketPrice = 0;
       }
     })
@@ -56,6 +56,12 @@ export default function BuySell() {
       alert("Enter all required fields.")
     }
 
+  };
+
+  const handleMakeOrder = () => {
+    makeOrder();
+    console.log("Make Order ran");
+    handleClose();
   };
 
   const handleStockNumberChange = (event: { target: { value: string; }; }) => {
@@ -125,7 +131,7 @@ export default function BuySell() {
               Total Price: ${Number(limitPrice) * Number(numStocks)}
             </Typography>
             <Box display="flex" flexDirection="row">
-              <Button variant="contained" autoFocus>Confirm</Button>
+              <Button variant="contained" onClick={handleMakeOrder} autoFocus>Confirm</Button>
               <Button onClick={handleClose}>Cancel</Button>
             </Box>
           </Box>

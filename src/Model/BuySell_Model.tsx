@@ -3,7 +3,7 @@ import { typedFetch } from "./model";
 const url = "";
 
 //Should display the stock, ticker + company, 
-function displayTicker() {
+export function makeOrder() {
     //Search bar on top
 
     //Should have holdings (account amount, day earnings, and day earning %)
@@ -11,6 +11,8 @@ function displayTicker() {
     //Graph (Not included in MVP)
 
     //List of holdings (number of holdings)
+    console.log("Making order");
+
 }
 
 export function getMarketPrice(ticker: String): Promise<number | void> {
