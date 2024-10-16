@@ -1,18 +1,15 @@
 // This should be the url of backend or api gateway
-const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
+
+// Now the url not the sample cloud run function but the specific handler for login specifically!
+const BASE_URL = "https://loginhandler-544401150213.us-central1.run.app";
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
         const startTime = Date.now();
-        console.log(startTime)
+        // console.log(startTime)
         const response = await fetch(`${BASE_URL}${url}`, options);
-        const getTime = Date.now();
-        console.log(getTime);
-        console.log(response);
-        console.log("response time: " +(getTime - startTime) );
-        // Check if the response is okay (status 200-299)
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(response.statusText);
         }
 
         // If the response is not empty, parse JSON
@@ -20,7 +17,7 @@ const request = async (url: string, options: RequestInit) => {
             const data = await response.json();
             return data;
         }
-
+        console.log(response.statusText);
         return null; // No content to return
     } catch (error) {
         console.error("API request failed", error);
@@ -30,15 +27,15 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to send login request
 export const loginHttp = async (username: string, password: string) => {
-    const response = await request("/hello", {
+    const response = await request("/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        // Body yet to be modified
+        // Here a username should be directly passed into body [was: {username}]
         body: JSON.stringify({
-            username: {username},
-            password: {password} }),
+            username: username,
+            password: password }),
     });
 
     console.log(response);
