@@ -1,11 +1,13 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
+import OrdersTable from "./OrdersTable";
 
 const Orders = () => {
   return (
-    <>
-      <h1>Orders</h1>
-      <p>Orders Below</p>
-    </>
+    <div>
+      <OrdersTable />
+      <Outlet />
+    </div>
   );
 };
 
