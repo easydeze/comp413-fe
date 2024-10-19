@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { homeMovementsHttp } from "../../../API/Home/HomeAPI";
 
-const movement_api = "";
+interface MovementProps {
+  token: string;
+}
 
 const Movement = ({
   symbol,
@@ -31,15 +34,26 @@ const Movement = ({
   );
 };
 
-export default function Movements() {
+export default function Movements({ token }: MovementProps) {
   // API call to get top 3 movements.
   let [movements, setMovements] = useState<any[]>([]);
 
+  const [error, setError] = useState(false);
+
   useEffect(() => {
-    fetch(movement_api)
-      .then((response) => response.json())
-      .then((data) => setMovements(data));
-  }, []);
+    const fetchMovements = async () => {
+      try {
+        const response = await homeMovementsHttp(token);
+        if (response) {
+          setMovements(response);
+        }
+      } catch (error) {
+        setError(true);
+      }
+    };
+
+    fetchMovements();
+  }, [token]);
 
   movements = [
     {
@@ -59,7 +73,9 @@ export default function Movements() {
     },
   ];
 
-  return (
+  return error ? (
+    <div>There is an error getting movements.</div>
+  ) : (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <h3>Top/bottom movers</h3>

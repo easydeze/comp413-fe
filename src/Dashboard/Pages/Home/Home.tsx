@@ -1,13 +1,17 @@
 import Movements from "./Movements";
 import Balance from "./Balance";
 
-export default function Home() {
+interface HomeProps {
+  token: string;
+}
+
+export default function Home({ token }: HomeProps) {
   return (
     <>
       <h2>Home</h2>
       <div className="home">
-        <Balance />
-        <Movements />
+        <Balance token={token} />
+        <Movements token={token} />
       </div>
     </>
   );
