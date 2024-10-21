@@ -1,12 +1,12 @@
-// This should be the url of backend or api gateway
+// URLs for different handlers
+const BASE_URL_BAL = "https://balancehandler-544401150213.us-central1.run.app";
+const BASE_URL_MOV = "https://movementshandler-544401150213.us-central1.run.app";
 
-// Now the url not the sample cloud run function but the specific handler for login specifically!
-const BASE_URL = ""
-;
 // Helper function to handle requests
-const request = async (url: string, options: RequestInit) => {
+const request = async (url: string, baseUrl: string, options: RequestInit) => {
     try {
-        const response = await fetch(`${BASE_URL}${url}`, options);
+        const response = await fetch(`${baseUrl}${url}`, options);
+        console.log(response);
         if (!response.ok) {
             throw new Error(response.statusText);
         }
@@ -26,13 +26,12 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to send balance request
 export const homeBalanceHttp = async (token: string) => {
-    const response = await request("/balance", {
+    const response = await request("/balance", BASE_URL_BAL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            token: token}),
+        body: JSON.stringify({ token: token }),
     });
 
     console.log(response);
@@ -41,15 +40,14 @@ export const homeBalanceHttp = async (token: string) => {
 
 // Function to send movements request
 export const homeMovementsHttp = async (token: string) => {
-        const response = await request("/movements", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                token: token}),
-        });
-    
-        console.log(response);
-        return response;
+    const response = await request("/movements", BASE_URL_MOV, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: token }),
+    });
+
+    console.log(response);
+    return response;
 };
