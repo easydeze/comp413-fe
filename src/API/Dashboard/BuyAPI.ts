@@ -1,10 +1,9 @@
-// This should be the url of backend or api gateway
 const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
-
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
         const response = await fetch(`${BASE_URL}${url}`, options);
+        console.log(response);
 
         // Check if the response is okay (status 200-299)
         if (!response.ok) {
@@ -25,37 +24,17 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 // Function to send login request
-export const login = async (username: string, password: string) => {
-    const response = await request("/login", {
+export const buyHttp = async () => {
+    const response = await request("/buy", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         // Body yet to be modified
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+
+        }),
     });
-
-    return response;
-};
-
-export const getUserProfile = async (userId: string) => {
-    const response = await request(`/users/${userId}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
-    return response;
-};
-//
-export const BuySell = async (userId: string, OTHER_THINGSY: string) => {
-    const response = await request(`/users/${userId}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-
+    console.log(response);
     return response;
 };

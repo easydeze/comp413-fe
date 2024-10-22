@@ -1,19 +1,33 @@
 import { LineChart } from "@mui/x-charts/LineChart";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { homeBalanceHttp } from "../../../API/Home/HomeAPI";
 
-const balance_api = "";
+interface BalanceProps {
+  token: string;
+}
 
-export default function Balance() {
-  // API call to get top 3 movements.
-  let [balances, setBalances] = useState<any[]>([]);
+export default function Balance({ token }: BalanceProps) {
+  const [balances, setBalances] = useState<any[]>([]);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch(balance_api)
-      .then((response) => response.json())
-      .then((data) => setBalances(data));
-  }, []);
+    const fetchBalances = async () => {
+      try {
+        const response = await homeBalanceHttp(token);
+        if (response) {
+          setBalances(response);
+        }
+      } catch (error) {
+        setError(true);
+      }
+    };
 
-  return (
+    fetchBalances();
+  }, [token]);
+
+  return error ? (
+    <div>There is an error getting balance.</div>
+  ) : (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <h3>Balance</h3>
       <div style={{ flex: 1, padding: "10px" }}>

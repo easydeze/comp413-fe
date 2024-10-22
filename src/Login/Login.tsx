@@ -1,24 +1,38 @@
 import React, { useState } from "react";
 import { Button, Box, Typography } from "@mui/material";
 import "./login.css";
+import { loginHttp } from "../API/Login/LoginAPI";
 
 interface LoginProps {
   toggleLogin: (value: boolean) => void;
-  onLogin: (username: string) => void; // Add onLogin prop
+  onLogin: (username: string, token: string) => void; // Pass both username and token
 }
 
 const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
   const [username, setUsername] = useState("");
-  const [error, setError] = useState(""); // State for error message
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    if (username.trim() === "") {
-      setError("Username is required"); // Set error message if username is empty
+  const handleLogin = async () => {
+    if (username.trim() === "" || password.trim() === "") {
+      setError("Username and password are required");
       return;
     }
-    onLogin(username); // Call the onLogin function
-    toggleLogin(false); // Close the login modal
-    setError(""); // Clear error on successful login
+
+    try {
+      const response = await loginHttp(username, password);
+
+      if (response && response.token) {
+        const { token } = response;
+        onLogin(username, token);
+        toggleLogin(false);
+        setError("");
+      } else {
+        setError("Invalid credentials. Please try again.");
+      }
+    } catch (error: any) {
+      setError("Login failed. Please try again.");
+    }
   };
 
   return (
@@ -34,12 +48,20 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
               onChange={(e) => {
                 setUsername(e.target.value);
                 if (e.target.value.trim() !== "") {
-                  setError(""); // Clear error when username is valid
+                  setError("");
                 }
               }}
-              onKeyPress={(e) => {
-                if (e.key === "Enter" && username.trim() !== "") {
-                  handleLogin();
+              required
+            />
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (e.target.value.trim() !== "") {
+                  setError("");
                 }
               }}
               required
@@ -50,7 +72,7 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
             <Button
               id="login-button"
               onClick={handleLogin}
-              disabled={!username.trim()}
+              disabled={!username.trim() || !password.trim()}
             >
               Login
             </Button>
