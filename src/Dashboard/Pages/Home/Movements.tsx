@@ -5,6 +5,12 @@ interface MovementProps {
   token: string;
 }
 
+interface Movement {
+  symbol: string;
+  difference: number;
+  last_price: number;
+}
+
 const Movement = ({
   symbol,
   difference,
@@ -36,7 +42,7 @@ const Movement = ({
 
 export default function Movements({ token }: MovementProps) {
   // API call to get top 3 movements.
-  let [movements, setMovements] = useState<any[]>([]);
+  let [movements, setMovements] = useState<Movement[]>([]);
 
   const [error, setError] = useState(false);
 
@@ -45,7 +51,7 @@ export default function Movements({ token }: MovementProps) {
       try {
         const response = await homeMovementsHttp(token);
         if (response) {
-          setMovements(response);
+          setMovements(response.movements);
         }
       } catch (error) {
         setError(true);
@@ -54,24 +60,6 @@ export default function Movements({ token }: MovementProps) {
 
     fetchMovements();
   }, [token]);
-
-  movements = [
-    {
-      symbol: "AAPL",
-      difference: 5.23,
-      last_price: 145.32,
-    },
-    {
-      symbol: "TSLA",
-      difference: -12.87,
-      last_price: 695.4,
-    },
-    {
-      symbol: "AMZN",
-      difference: 8.45,
-      last_price: 3330.12,
-    },
-  ];
 
   return error ? (
     <div>There is an error getting movements.</div>

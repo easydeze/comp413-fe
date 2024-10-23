@@ -7,7 +7,8 @@ interface BalanceProps {
 }
 
 export default function Balance({ token }: BalanceProps) {
-  const [balances, setBalances] = useState<any[]>([]);
+  const [xBalances, setXBalances] = useState<number[]>([]);
+  const [yBalances, setYBalances] = useState<number[]>([]);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -15,7 +16,8 @@ export default function Balance({ token }: BalanceProps) {
       try {
         const response = await homeBalanceHttp(token);
         if (response) {
-          setBalances(response);
+          setXBalances(response.list1);
+          setYBalances(response.list2);
         }
       } catch (error) {
         setError(true);
@@ -25,17 +27,17 @@ export default function Balance({ token }: BalanceProps) {
     fetchBalances();
   }, [token]);
 
-  return error ? (
+  return error || !xBalances || !yBalances ? (
     <div>There is an error getting balance.</div>
   ) : (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <h3>Balance</h3>
       <div style={{ flex: 1, padding: "10px" }}>
         <LineChart
-          xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+          xAxis={[{ data: xBalances }]}
           series={[
             {
-              data: [2, 5.5, 2, 8.5, 1.5, 5],
+              data: yBalances,
             },
           ]}
           height={400}
