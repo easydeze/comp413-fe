@@ -43,15 +43,17 @@ const Movement = ({
 export default function Movements({ token }: MovementProps) {
   // API call to get top 3 movements.
   let [movements, setMovements] = useState<Movement[]>([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchMovements = async () => {
       try {
         const response = await homeMovementsHttp(token);
         if (response) {
           setMovements(response.movements);
+          setIsLoading(false);
         }
       } catch (error) {
         setError(true);
@@ -67,16 +69,22 @@ export default function Movements({ token }: MovementProps) {
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <h3>Top/bottom movers</h3>
-        <div className="movers">
-          {movements.map((movement, index) => (
-            <Movement
-              key={index}
-              symbol={movement.symbol}
-              difference={movement.difference}
-              last_price={movement.last_price}
-            />
-          ))}
-        </div>
+        <>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <div className="movers">
+              {movements.map((movement, index) => (
+                <Movement
+                  key={index}
+                  symbol={movement.symbol}
+                  difference={movement.difference}
+                  last_price={movement.last_price}
+                />
+              ))}
+            </div>
+          )}
+        </>
       </div>
     </>
   );
