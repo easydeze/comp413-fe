@@ -6,7 +6,7 @@ interface HomeProps {
 }
 
 export default function Home({ token }: HomeProps) {
-  return (
+  return token != "" ? (
     <>
       <h2>Home</h2>
       <div className="home">
@@ -14,5 +14,7 @@ export default function Home({ token }: HomeProps) {
         <Movements token={token} />
       </div>
     </>
+  ) : (
+    <></>
   );
 }
