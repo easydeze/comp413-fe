@@ -1,0 +1,27 @@
+{
+    "$id": "order.json",
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "Order",
+    "type": "object",
+    "properties": {},
+    "required": [
+        "isBuying",
+        "tickerSymbol",
+        "stockAmount",
+        "limitPrice"
+    ],
+    "definitions": {
+        "isBuying": {
+            "type": "boolean"
+        },
+        "tickerSymbol": {
+            "type": "string"
+        },
+        "stockAmount": {
+            "type": "number"
+        },
+        "limitPrice": {
+            "type": "number"
+        }
+    }
+}
