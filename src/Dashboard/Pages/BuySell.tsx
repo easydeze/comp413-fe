@@ -4,6 +4,7 @@ import { Box } from "@mui/system";
 import React from "react";
 
 import { getMarketPrice, makeOrder } from "../../Model/BuySell_Model";
+import { sendOrderRequest } from "../../Buy-Sell/OrderMethods";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -19,7 +20,7 @@ const style = {
 
 export default function BuySell() {
   const [isShown, setIsShown] = React.useState(false);
-  const [mode, setMode] = React.useState("NONE");
+  const [mode, setMode] = React.useState("BUY");
   const [ticker, setTicker] = React.useState('');
   const [numStocks, setStockAmount] = React.useState(0);
   const [limitPrice, setLimitPrice] = React.useState(0);
@@ -59,7 +60,7 @@ export default function BuySell() {
   };
 
   const handleMakeOrder = () => {
-    makeOrder();
+    const order = sendOrderRequest(mode=="BUY", ticker, numStocks, limitPrice);
     console.log("Make Order ran");
     handleClose();
   };

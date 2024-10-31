@@ -3,7 +3,7 @@ import { typedFetch } from "./model";
 const url = "";
 
 //Should display the stock, ticker + company, 
-export function makeOrder() {
+export function makeOrder(ticker: String, ) {
     //Search bar on top
 
     //Should have holdings (account amount, day earnings, and day earning %)

@@ -3,11 +3,11 @@ import orderSchema from "../../schemas/order.json"
 
 
 //Todo: Modify and test JSON function to see
-export function sendBuySellRequest(isBuy: boolean, tickerSymbol: string, stockAmount: number, limitPrice: number) {
+export function sendOrderRequest(isBuy: boolean, tickerSymbol: string, stockAmount: number, limitPrice: number) : Promise<boolean> {
     const buy_sell_url = "";
     const token = ""
     const options: RequestInit = {
-        method: `PUT`,
+        method: `POST`,
         headers: {
             accept: `application/json`,
             "Content-Type": `application/json`,
