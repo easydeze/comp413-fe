@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { BrowserRouter, NavLink, Routes, Route } from "react-router-dom";
 import Orders from "./Orders";
-import History from "./History";
+import Positions from "./Positions";
 import Transfers from "./Transfers";
 import { Tabs, Tab, Typography } from "@mui/material";
 import { Box } from "@mui/system";
@@ -37,7 +36,7 @@ const Activity = () => {
       <Box>
         <Tabs value={value} onChange={handleChange} aria-label="activity tabs">
           <Tab label="Orders" />
-          <Tab label="History" />
+          <Tab label="Positions" />
           <Tab label="Transfers" />
         </Tabs>
       </Box>
@@ -46,7 +45,7 @@ const Activity = () => {
         <Orders />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <History />
+        <Positions />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Transfers />
