@@ -1,4 +1,5 @@
 import React from "react";
+import { transferHttp } from "../../API/Transfers/TransfersAPI";
 import {
   FormControl,
   InputLabel,
@@ -11,7 +12,11 @@ import {
   Button,
 } from "@mui/material";
 
-const Transfers = () => {
+interface TransfersProps {
+  token: string;
+}
+
+const Transfers = ({ token }: TransfersProps) => {
   const [alignment, setAlignment] = React.useState("buy");
   const [amount, setAmount] = React.useState(0);
 
@@ -28,8 +33,11 @@ const Transfers = () => {
   };
 
   const submitTransaction = () => {
-    console.log(alignment);
-    console.log(amount);
+    if (amount >= 0) {
+      transferHttp(alignment, amount, token);
+    } else {
+      console.log("Amount not valid.");
+    }
   };
 
   return (

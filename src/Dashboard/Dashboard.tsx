@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
         {selectView === "Home" ? (
           <Home token={token} />
         ) : selectView === "Activity" ? (
-          <Activity />
+          <Activity token={token} />
         ) : (
           <BuySell />
         )}
