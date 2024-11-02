@@ -22,17 +22,19 @@ const Transfers = () => {
     setAlignment(newAlignment);
   };
 
-  const handleAmountChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newAmount: number
-  ) => {
+  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newAmount = Number(event.target.value);
     setAmount(newAmount);
+  };
+
+  const submitTransaction = () => {
+    console.log(alignment);
+    console.log(amount);
   };
 
   return (
     <>
       <h1>Transfers</h1>
-      <p>Enter your transfer details:</p>
       <Stack
         component="form"
         sx={{ width: "25ch" }}
@@ -57,11 +59,14 @@ const Transfers = () => {
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
             type="number"
+            onChange={handleAmountChange}
           />
           <FormHelperText>Enter an amount greater than $0.</FormHelperText>
         </FormControl>
-        <Button>Submit</Button>
       </Stack>
+      <Button variant="contained" onClick={submitTransaction}>
+        Submit
+      </Button>
     </>
   );
 };
