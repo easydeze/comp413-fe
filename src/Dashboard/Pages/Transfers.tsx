@@ -37,7 +37,7 @@ const Transfers = ({ token }: TransfersProps) => {
 
   const submitTransaction = () => {
     if (amount > 0) {
-      // transferHttp(alignment, amount, token);
+      transferHttp(alignment, amount, token);
       if (alignment == "withdrew") {
         setPopup(`Withdrew $${amount}.`);
       } else {
