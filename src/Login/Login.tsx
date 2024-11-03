@@ -5,7 +5,7 @@ import { loginHttp } from "../API/Login/LoginAPI";
 
 interface LoginProps {
   toggleLogin: (value: boolean) => void;
-  onLogin: (username: string, token: string) => void; // Pass both username and token
+  onLogin: (username: string, token: string) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
@@ -35,48 +35,63 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleLogin();
+    }
+  };
+
   return (
     <>
       <main id="login-modal" className="modal">
         <Box className="modal-content">
-          <div className="input-container">
-            <input
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                if (e.target.value.trim() !== "") {
-                  setError("");
-                }
-              }}
-              required
-            />
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (e.target.value.trim() !== "") {
-                  setError("");
-                }
-              }}
-              required
-            />
-            {error && <Typography color="error">{error}</Typography>}
-          </div>
-          <div className="button-container">
-            <Button
-              id="login-button"
-              onClick={handleLogin}
-              disabled={!username.trim() || !password.trim()}
-            >
-              Login
-            </Button>
-          </div>
+          <form
+            onKeyDown={handleKeyDown} // Attach keydown handler to form
+            onSubmit={(e) => {
+              e.preventDefault(); // Prevent default form submission
+              handleLogin();
+            }}
+          >
+            <div className="input-container">
+              <input
+                id="username"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  if (e.target.value.trim() !== "") {
+                    setError("");
+                  }
+                }}
+                required
+              />
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (e.target.value.trim() !== "") {
+                    setError("");
+                  }
+                }}
+                required
+              />
+              {error && <Typography color="error">{error}</Typography>}
+            </div>
+            <div className="button-container">
+              <Button
+                id="login-button"
+                onClick={handleLogin}
+                disabled={!username.trim() || !password.trim()}
+              >
+                Login
+              </Button>
+            </div>
+          </form>
         </Box>
       </main>
     </>
