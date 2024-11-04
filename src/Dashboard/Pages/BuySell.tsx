@@ -61,9 +61,7 @@ export default function BuySell() {
   };
 
   const handleMakeOrder = async () => {
-    // makeOrder();
     console.log("Make Order ran");
-    // handleClose();
 
     try {
 
@@ -81,8 +79,7 @@ export default function BuySell() {
         const response = await buyHttp(newOrder);
 
         if (response && response.token) {
-          //Close the dialog box
-          handleClose();
+          finishOrder(handleClose);
         } else {
           alert("Buy Order was unsuccessful");
         }
@@ -91,8 +88,7 @@ export default function BuySell() {
         const response = await sellHttp(newOrder);
 
         if (response && response.token) {
-          //Close the dialog box
-          handleClose();
+          finishOrder(handleClose);
         } else {
           alert("Sell Order was unsuccessful");
         }
@@ -183,4 +179,13 @@ export default function BuySell() {
       </Box>
     </Box>
   );
+}
+
+type closeHandler = () => void;
+
+function finishOrder(closer : closeHandler){
+  //Close the dialog box
+  alert("Order was made.");
+  closer();
+  //Go to positions page
 }
