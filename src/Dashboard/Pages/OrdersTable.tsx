@@ -68,7 +68,7 @@ function OrderRow({ order }: { order: PackagedOrder }) {
         <TableCell align="left">{`$${order.cash_balance}`}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
           <Collapse in={status} timeout="auto" unmountOnExit>
             <Box>
               <Table size="small" aria-label="order info">
