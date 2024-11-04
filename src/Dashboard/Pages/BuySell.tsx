@@ -60,6 +60,40 @@ export default function BuySell() {
 
   };
 
+
+  const handleReset = () => {
+    //Erase the input of the input elements
+    const inputTickerSymbol = document.getElementById("input-tickerSymbol")
+    if (inputTickerSymbol){
+      inputTickerSymbol.textContent = "";
+    }
+
+    const inputLimitPrice = document.getElementById("input-limit-price");
+    if (inputLimitPrice){
+      inputLimitPrice.textContent = "";
+    }
+
+    const inputBuyStockAmount = document.getElementById("input-buy-stock-amount");
+    if (inputBuyStockAmount){
+      inputBuyStockAmount.textContent = "";
+      inputBuyStockAmount.hidden = true;
+    }
+
+    const inputSellStockAmount = document.getElementById("input-sell-stock-amount");
+    if (inputSellStockAmount){
+      inputSellStockAmount.textContent = ""
+      inputSellStockAmount.hidden = true;
+    }
+
+    
+    //Reset the states
+    setIsShown(false);
+    setLimitPrice(0);
+    setMode("NONE");
+    setStockAmount(0);
+    setTicker("");
+  }
+
   const handleMakeOrder = async () => {
     console.log("Make Order ran");
 
@@ -110,40 +144,43 @@ export default function BuySell() {
 
   const handleClose = () => setIsShown(false);
 
+
   return (
     <Box display="flex" flexDirection="column" alignItems="start">
       <h2>Buy and Sell</h2>
-      <Box display="flex" flexDirection="column" alignItems="start">
-        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center" justifyContent="start">
+      <Box display="flex" flexDirection="column" alignItems="start" gap={1}>
+        <p>As of {Date()}</p>
+        <Box display="flex" flexDirection="row" alignItems="start" gap={1}>
           <h3>Ticker: </h3>
-          <Input onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
+          <Input id="input-ticker-symbol" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
         </Box>
 
-        <Box display="flex" flexDirection="row" alignItems="start">
+        <Box display="flex" flexDirection="row" alignItems="start" gap={1}>
           <Button onClick={handleBuyClick}>Buy</Button>
           {
             mode === "BUY" && (
-              <Input onChange={handleStockNumberChange} placeholder="Buy #"></Input>
+              <Input id="input-buy-stock-amount" onChange={handleStockNumberChange} placeholder="Buy #"></Input>
             )
           }
           <Button onClick={handleSellClick}>Sell</Button>
           {
             mode === "SELL" && (
-              <Input onChange={handleStockNumberChange} placeholder="Sell #"  ></Input>
+              <Input id="input-sell-stock-amount" onChange={handleStockNumberChange} placeholder="Sell #"  ></Input>
             )
           }
 
         </Box>
-        <Box display="flex" flexDirection="column" alignItems="start">
+        <Box display="flex" flexDirection="column" alignItems="start" gap={1}>
           <h3>Market Price: {marketPrice}</h3>
-          <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
+          <Box display="flex" flexDirection="row" alignItems="start" textAlign="center" gap={1}>
             <h3>Limit Price: </h3>
-            <Input id="-desired-market-price" onChange={handleLimitPriceChange} placeholder="Enter Desired Price" />
+            <Input id="input-limit-price" onChange={handleLimitPriceChange} placeholder="Enter Desired Price" />
           </Box>
         </Box>
 
 
-        <Button variant="contained" onClick={handleConfirmClick}>View Order</Button>
+        <Button variant="contained" onClick={handleConfirmClick}>Preview Order</Button>
+        <Button variant="contained" onClick={handleReset}>Reset</Button>
         {/* TODO:: Make this a DIALOG */}
         <Modal
           open={isShown}
@@ -183,7 +220,7 @@ export default function BuySell() {
 
 type closeHandler = () => void;
 
-function finishOrder(closer : closeHandler){
+function finishOrder(closer: closeHandler) {
   //Close the dialog box
   alert("Order was made.");
   closer();
