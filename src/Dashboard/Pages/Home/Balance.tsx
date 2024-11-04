@@ -34,7 +34,7 @@ export default function Balance({ token }: BalanceProps) {
     <div>There is an error getting balance.</div>
   ) : (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <h3>Balance</h3>
+      <h2>Balance</h2>
       <>
         {isLoading ? (
           <div style={{ flex: 1, padding: "10px" }}>

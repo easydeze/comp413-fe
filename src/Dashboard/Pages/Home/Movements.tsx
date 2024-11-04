@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import { homeMovementsHttp } from "../../../API/Home/HomeAPI";
+import {
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableContainer,
+  Table,
+  Paper,
+} from "@mui/material";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 interface MovementProps {
   token: string;
@@ -11,32 +21,16 @@ interface Movement {
   last_price: number;
 }
 
-const Movement = ({
-  symbol,
-  difference,
-  last_price,
-}: {
-  symbol: string;
-  difference: number;
-  last_price: number;
-}) => {
-  const isPositive = difference >= 0;
-  const movementStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "10px",
-    backgroundColor: isPositive ? "#e0f7e0" : "#f7e0e0",
-    color: isPositive ? "green" : "red",
-    border: "1px solid #ccc",
-    margin: "5px 0",
+const DetailedMovement = (difference: number) => {
+  const style = {
+    color: difference > 0 ? "green" : "red",
+    padding: 0,
+    margin: 0,
   };
-
-  return (
-    <div className="movement" style={movementStyle}>
-      <p>{symbol}</p>
-      <p>{difference.toFixed(2)}</p>
-      <p>{last_price.toFixed(2)}</p>
-    </div>
+  return difference > 0 ? (
+    <p style={style}>+{difference}</p>
+  ) : (
+    <p style={style}>{difference}</p>
   );
 };
 
@@ -68,21 +62,33 @@ export default function Movements({ token }: MovementProps) {
   ) : (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <h3>Top/bottom movers</h3>
+        <h2>Top and bottom movers</h2>
         <>
           {isLoading ? (
             <div>Loading...</div>
           ) : (
-            <div className="movers">
-              {movements.map((movement, index) => (
-                <Movement
-                  key={index}
-                  symbol={movement.symbol}
-                  difference={movement.difference}
-                  last_price={movement.last_price}
-                />
-              ))}
-            </div>
+            <TableContainer component={Paper}>
+              <Table aria-label="orders table" size="medium">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left">Symbol</TableCell>
+                    <TableCell align="left">Difference</TableCell>
+                    <TableCell align="left">Last Price</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {movements.map((movement, _) => (
+                    <TableRow>
+                      <TableCell align="left">{movement.symbol}</TableCell>
+                      <TableCell align="left">
+                        {DetailedMovement(movement.difference)}
+                      </TableCell>
+                      <TableCell align="left">{movement.last_price}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           )}
         </>
       </div>
