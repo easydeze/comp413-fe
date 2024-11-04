@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import React from "react";
 
 import { getMarketPrice, makeOrder } from "../../Model/BuySell_Model";
-import { sendOrderRequest } from "../../Buy-Sell/OrderMethods";
+import { sendOrderRequest, Order } from "../../Buy-Sell/OrderMethods";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -60,9 +60,33 @@ export default function BuySell() {
   };
 
   const handleMakeOrder = () => {
-    const order = sendOrderRequest(mode=="BUY", ticker, numStocks, limitPrice);
-    console.log("Make Order ran");
-    handleClose();
+    const orderReq : Order = {
+      isBuy : mode == "BUY", 
+      tickerSymbol : ticker, 
+      stockAmount : numStocks, 
+      limitPrice : limitPrice,
+      requestSubmitted : new Date().getTime(),
+      status : "STARTED"
+    }
+    const order = sendOrderRequest(orderReq).then((response: Order | String) => {
+      //Response is a string
+      if (typeof response == 'string') {
+        alert(response)
+      }
+
+      else {
+        alert("Order Successfully Made!");
+
+        //Respone is an Order 
+        handleClose();
+
+        //Go to Order Page
+      }
+
+    }).catch((error: Error) => {
+      alert(error.message)
+    })
+    
   };
 
   const handleStockNumberChange = (event: { target: { value: string; }; }) => {
