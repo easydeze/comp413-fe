@@ -4,6 +4,8 @@ import { Box } from "@mui/system";
 import React from "react";
 
 import { getMarketPrice, makeOrder } from "../../Model/BuySell_Model";
+import { buyHttp, sellHttp, getMarketPriceHttp, Order } from "../../API/Dashboard/BuySelllAPI"
+import { Label } from "@mui/icons-material";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -36,7 +38,7 @@ export default function BuySell() {
 
   const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setTicker(event.target.value);
-    getMarketPrice(ticker).then((r) => {
+    getMarketPriceHttp(ticker).then((r) => {
       if (typeof r == 'number') {
         marketPrice = r;
       } else {
@@ -58,11 +60,51 @@ export default function BuySell() {
 
   };
 
-  const handleMakeOrder = () => {
-    makeOrder();
+  const handleMakeOrder = async () => {
+    // makeOrder();
     console.log("Make Order ran");
-    handleClose();
-  };
+    // handleClose();
+
+    try {
+
+      //Create the newOrder of the buy/sell order request
+      const newOrder: Order = {
+        tickerSymbol: ticker,
+        stockAmount: numStocks,
+        limitPrice: limitPrice,
+        requestSubmitted: 0,
+        status: "STARTED"
+      }
+
+      //Request the order
+      if (mode === "BUY") {
+        const response = await buyHttp(newOrder);
+
+        if (response && response.token) {
+          //Close the dialog box
+          handleClose();
+        } else {
+          alert("Buy Order was unsuccessful");
+        }
+      }
+      else if (mode == "SELL") {
+        const response = await sellHttp(newOrder);
+
+        if (response && response.token) {
+          //Close the dialog box
+          handleClose();
+        } else {
+          alert("Sell Order was unsuccessful");
+        }
+      }
+    } catch (error: any) {
+      alert("Order was unsuccessful. Please try again.")
+
+    }
+
+
+    console.log("Order attempt completed.")
+  }
 
   const handleStockNumberChange = (event: { target: { value: string; }; }) => {
     const result = event.target.value.replace(/\D/g, '');
@@ -76,9 +118,9 @@ export default function BuySell() {
     <Box display="flex" flexDirection="column" alignItems="start">
       <h2>Buy and Sell</h2>
       <Box display="flex" flexDirection="column" alignItems="start">
-        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
-          <p>Ticker: </p>
-          <Input id="stock-ticker" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
+        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center" justifyContent="start">
+          <h3>Ticker: </h3>
+          <Input onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
         </Box>
 
         <Box display="flex" flexDirection="row" alignItems="start">
@@ -96,10 +138,12 @@ export default function BuySell() {
           }
 
         </Box>
-        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
-          <p>Market Price:: {marketPrice}</p>
-          <p>Limit Price:: </p>
-          <Input id="-desired-market-price" onChange={handleLimitPriceChange} placeholder="Enter Desired Price" />
+        <Box display="flex" flexDirection="column" alignItems="start">
+          <h3>Market Price: {marketPrice}</h3>
+          <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
+            <h3>Limit Price: </h3>
+            <Input id="-desired-market-price" onChange={handleLimitPriceChange} placeholder="Enter Desired Price" />
+          </Box>
         </Box>
 
 

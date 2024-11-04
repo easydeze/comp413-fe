@@ -1,4 +1,6 @@
-const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
+
+//API for Buy and Sell
+const BASE_URL = "https://buysellorderhandler-544401150213.us-central1.run.app";
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {

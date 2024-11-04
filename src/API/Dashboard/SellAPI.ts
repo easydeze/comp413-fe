@@ -1,4 +1,6 @@
-const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
+
+//API URL for buy and sell
+const BASE_URL = "https://buysellorderhandler-544401150213.us-central1.run.app";
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
@@ -24,7 +26,7 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 // Function to send login request
-export const buyHttp = async () => {
+export const sellHttp = async () => {
     const response = await request("/sell", {
         method: "POST",
         headers: {
