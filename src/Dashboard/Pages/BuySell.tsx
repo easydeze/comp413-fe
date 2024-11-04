@@ -3,8 +3,7 @@ import { Button, Input, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
-import { getMarketPrice, makeOrder } from "../../Model/BuySell_Model";
-import { sendOrderRequest, Order } from "../../Buy-Sell/OrderMethods";
+import { sendOrderRequest, Order, getMarketPrice } from "../../Buy-Sell/OrderMethods";
 
 const style = {
   position: 'absolute' as 'absolute',

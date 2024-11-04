@@ -1,7 +1,7 @@
 import { typedFetch, validateHelper } from "../Model/model";
 import orderSchema from "./schemas/order.json"
 
-const buy_sell_url = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
+const buy_sell_url = "https://buysellorderhandler-544401150213.us-central1.run.app";
 
 export interface Order {
     isBuy: boolean;
@@ -49,6 +49,7 @@ export function getMarketPrice(tickerSymbol: string): Promise<number | string> {
     };
 
     const marketPrice = typedFetch<number>(buy_sell_url, options, orderSchema).then((response: number) => {
+        console.log("Market Price is " + response)
         return response
     }).catch((error: Error) => {
         return error.message;
