@@ -1,13 +1,15 @@
-import { Routes, Route } from 'react-router-dom'; // Removed BrowserRouter
-import Login from './Login/Login';
-import Dashboard from './Dashboard/Dashboard';
+import { Routes, Route } from "react-router-dom";
+import Dashboard from "./Dashboard/Dashboard";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "./theme";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
-      {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-    </Routes>
+    <ThemeProvider theme={theme}>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
+    </ThemeProvider>
   );
 }
 
