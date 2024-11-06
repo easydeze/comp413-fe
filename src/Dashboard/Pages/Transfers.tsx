@@ -21,6 +21,7 @@ const Transfers = ({ token }: TransfersProps) => {
   const [alignment, setAlignment] = React.useState("deposit");
   const [amount, setAmount] = React.useState(0);
   const [popup, setPopup] = React.useState("");
+  const [neg, setNeg] = React.useState(false);
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -43,6 +44,9 @@ const Transfers = ({ token }: TransfersProps) => {
       } else {
         setPopup(`Deposited $${amount}.`);
       }
+      setNeg(false);
+    } else {
+      setNeg(true);
     }
     setAmount(0);
   };
@@ -88,7 +92,13 @@ const Transfers = ({ token }: TransfersProps) => {
             value={amount}
             onChange={handleAmountChange}
           />
-          <FormHelperText>Enter an amount greater than $0.</FormHelperText>
+          {neg ? (
+            <FormHelperText style={{ color: "red" }}>
+              Enter an amount greater than $0.
+            </FormHelperText>
+          ) : (
+            <FormHelperText>Enter an amount greater than $0.</FormHelperText>
+          )}
         </FormControl>
       </Stack>
       <Button variant="contained" onClick={submitTransaction}>
