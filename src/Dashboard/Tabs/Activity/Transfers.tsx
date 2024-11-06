@@ -1,5 +1,5 @@
 import React from "react";
-import { transferHttp } from "../../API/Transfers/TransfersAPI";
+import { transferHttp } from "../../../API/Transfers/TransfersAPI";
 import {
   FormControl,
   InputLabel,
@@ -11,7 +11,7 @@ import {
   Stack,
   Button,
 } from "@mui/material";
-import { Popup } from "../Popup";
+import { Popup } from "../../Popup";
 
 interface TransfersProps {
   token: string;

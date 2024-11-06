@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import "../style.css";
-import Home from "./Pages/Home/Home";
-import Activity from "./Pages/Activity";
-import BuySell from "./Pages/BuySell";
+import Home from "./Tabs/Home/Home";
+import Activity from "./Tabs/Activity/Activity";
+import BuySell from "./Tabs/BuySell/BuySell";
 import Login from "../Login/Login";
 
 const Dashboard: React.FC = () => {

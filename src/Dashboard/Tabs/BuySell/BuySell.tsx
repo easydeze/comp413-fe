@@ -1,18 +1,17 @@
-
 import { Button, Input, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
-import { getMarketPrice, makeOrder } from "../../Model/BuySell_Model";
+import { getMarketPrice, makeOrder } from "../../../Model/BuySell_Model";
 
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "white",
-  border: '2px solid #000',
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
@@ -20,11 +19,10 @@ const style = {
 export default function BuySell() {
   const [isShown, setIsShown] = React.useState(false);
   const [mode, setMode] = React.useState("NONE");
-  const [ticker, setTicker] = React.useState('');
+  const [ticker, setTicker] = React.useState("");
   const [numStocks, setStockAmount] = React.useState(0);
   const [limitPrice, setLimitPrice] = React.useState(0);
   let marketPrice = 0;
-
 
   const handleBuyClick = () => {
     setMode("BUY");
@@ -34,28 +32,36 @@ export default function BuySell() {
     setMode("SELL");
   };
 
-  const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleTickerChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setTicker(event.target.value);
     getMarketPrice(ticker).then((r) => {
-      if (typeof r == 'number') {
+      if (typeof r == "number") {
         marketPrice = r;
       } else {
         marketPrice = 0;
       }
-    })
-  }
+    });
+  };
 
-  const handleLimitPriceChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleLimitPriceChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setLimitPrice(Number(event.target.value));
-  }
+  };
 
   const handleConfirmClick = () => {
-    if (ticker !== "" && numStocks !== 0 && mode !== "NONE" && limitPrice !== 0) {
+    if (
+      ticker !== "" &&
+      numStocks !== 0 &&
+      mode !== "NONE" &&
+      limitPrice !== 0
+    ) {
       setIsShown(true);
     } else {
-      alert("Enter all required fields.")
+      alert("Enter all required fields.");
     }
-
   };
 
   const handleMakeOrder = () => {
@@ -64,8 +70,8 @@ export default function BuySell() {
     handleClose();
   };
 
-  const handleStockNumberChange = (event: { target: { value: string; }; }) => {
-    const result = event.target.value.replace(/\D/g, '');
+  const handleStockNumberChange = (event: { target: { value: string } }) => {
+    const result = event.target.value.replace(/\D/g, "");
 
     setStockAmount(Number(result));
   };
@@ -76,34 +82,54 @@ export default function BuySell() {
     <Box display="flex" flexDirection="column" alignItems="start">
       <h2>Buy and Sell</h2>
       <Box display="flex" flexDirection="column" alignItems="start">
-        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
+        <Box
+          display="flex"
+          flexDirection="row"
+          alignItems="start"
+          textAlign="center"
+        >
           <p>Ticker: </p>
-          <Input id="stock-ticker" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
+          <Input
+            id="stock-ticker"
+            onChange={handleTickerChange}
+            placeholder="Enter Ticker Symbol"
+          />
         </Box>
 
         <Box display="flex" flexDirection="row" alignItems="start">
           <Button onClick={handleBuyClick}>Buy</Button>
-          {
-            mode === "BUY" && (
-              <Input onChange={handleStockNumberChange} placeholder="Buy #"></Input>
-            )
-          }
+          {mode === "BUY" && (
+            <Input
+              onChange={handleStockNumberChange}
+              placeholder="Buy #"
+            ></Input>
+          )}
           <Button onClick={handleSellClick}>Sell</Button>
-          {
-            mode === "SELL" && (
-              <Input onChange={handleStockNumberChange} placeholder="Sell #"  ></Input>
-            )
-          }
-
+          {mode === "SELL" && (
+            <Input
+              onChange={handleStockNumberChange}
+              placeholder="Sell #"
+            ></Input>
+          )}
         </Box>
-        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center">
+        <Box
+          display="flex"
+          flexDirection="row"
+          alignItems="start"
+          textAlign="center"
+        >
           <p>Market Price:: {marketPrice}</p>
           <p>Limit Price:: </p>
-          <Input id="-desired-market-price" onChange={handleLimitPriceChange} placeholder="Enter Desired Price" />
+          <Input
+            id="-desired-market-price"
+            onChange={handleLimitPriceChange}
+            placeholder="Enter Desired Price"
+          />
         </Box>
 
-
-        <Button variant="contained" onClick={handleConfirmClick}>View Order</Button>
+        <Button variant="contained" onClick={handleConfirmClick}>
+          View Order
+        </Button>
         {/* TODO:: Make this a DIALOG */}
         <Modal
           open={isShown}
@@ -131,7 +157,9 @@ export default function BuySell() {
               Total Price: ${Number(limitPrice) * Number(numStocks)}
             </Typography>
             <Box display="flex" flexDirection="row">
-              <Button variant="contained" onClick={handleMakeOrder} autoFocus>Confirm</Button>
+              <Button variant="contained" onClick={handleMakeOrder} autoFocus>
+                Confirm
+              </Button>
               <Button onClick={handleClose}>Cancel</Button>
             </Box>
           </Box>
