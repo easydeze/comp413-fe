@@ -8,6 +8,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  Stack,
   TableRow,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -158,31 +159,33 @@ const orders_list: PackagedOrder[] = [
 const OrdersTable = () => {
   return (
     <div>
-      <TableContainer component={Paper}>
-        <Table aria-label="orders table">
-          <colgroup>
-            <col style={{ width: "8%" }} />
-            <col style={{ width: "23%" }} />
-            <col style={{ width: "23%" }} />
-            <col style={{ width: "23%" }} />
-            <col style={{ width: "23%" }} />
-          </colgroup>
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell align="left">Date</TableCell>
-              <TableCell align="left">Description</TableCell>
-              <TableCell align="left">Amount</TableCell>
-              <TableCell align="left">Cash Balance</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders_list.map((order) => (
-              <OrderRow order={order} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Stack marginTop={5}>
+        <TableContainer component={Paper}>
+          <Table aria-label="orders table">
+            <colgroup>
+              <col style={{ width: "8%" }} />
+              <col style={{ width: "23%" }} />
+              <col style={{ width: "23%" }} />
+              <col style={{ width: "23%" }} />
+              <col style={{ width: "23%" }} />
+            </colgroup>
+            <TableHead>
+              <TableRow>
+                <TableCell />
+                <TableCell align="left">Date</TableCell>
+                <TableCell align="left">Description</TableCell>
+                <TableCell align="left">Amount</TableCell>
+                <TableCell align="left">Cash Balance</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {orders_list.map((order) => (
+                <OrderRow order={order} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Stack>
     </div>
   );
 };

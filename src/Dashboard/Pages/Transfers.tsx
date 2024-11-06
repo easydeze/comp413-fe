@@ -64,13 +64,13 @@ const Transfers = ({ token }: TransfersProps) => {
           onClose={handleClosePopup}
         />
       )}
-      <h1>Transfers</h1>
       <Stack
         component="form"
         sx={{ width: "25ch" }}
         spacing={2}
         noValidate
         autoComplete="off"
+        marginTop={5}
       >
         <ToggleButtonGroup
           color="primary"
