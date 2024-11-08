@@ -1,9 +1,8 @@
 export interface Order {
-    tickerSymbol: string;
-    stockAmount: number;
-    limitPrice: number;
-    requestSubmitted: number;
-    status: string;
+    symbol: string;
+    quantity: number;
+    price: number;
+    timeStamp: string;
 }
 
 export interface StockMarketPrice {
@@ -45,7 +44,6 @@ const request = async (url: string, options: RequestInit) => {
 export const buyHttp = async (buyOrder : Order) => {
     const response = await request(`/buy`, {
         method: "POST",
-        mode: 'no-cors',
         headers: {
             "Content-Type": "application/json",
             'Authorization': token,
@@ -66,7 +64,6 @@ export const buyHttp = async (buyOrder : Order) => {
 export const sellHttp = async (sellOrder : Order) => {
     const response = await request(`/sell`, {
         method: "POST",
-        mode: 'no-cors',
         headers: {
             "Content-Type": "application/json",
             'Authorization': token,
@@ -87,7 +84,6 @@ export const sellHttp = async (sellOrder : Order) => {
 export const getMarketPriceHttp = async (ticker: string) => {
     const response = await request(`/stocks/?tickerSymbol=${ticker}`, {
         method: "GET",
-        mode: 'no-cors',
         headers: {
             "Content-Type": "application/json",
             'Authorization': token,

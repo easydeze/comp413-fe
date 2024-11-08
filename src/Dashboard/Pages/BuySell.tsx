@@ -1,11 +1,10 @@
 
-import { Button, Input, Modal, Typography } from "@mui/material";
+import { Button, Dialog, DialogTitle, Input, Modal, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
-import { getMarketPrice, makeOrder } from "../../Model/BuySell_Model";
 import { buyHttp, sellHttp, getMarketPriceHttp, Order } from "../../API/Dashboard/BuySelllAPI"
-import { Label } from "@mui/icons-material";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -19,14 +18,18 @@ const style = {
   p: 4,
 };
 
+
 export default function BuySell() {
-  const [isShown, setIsShown] = React.useState(false);
+
+  //STATES
+  const [isPreviewShown, setIsPreviewShown] = React.useState(false);
   const [mode, setMode] = React.useState("NONE");
   const [ticker, setTicker] = React.useState('');
   const [numStocks, setStockAmount] = React.useState(0);
   const [limitPrice, setLimitPrice] = React.useState(0);
-  let marketPrice = 0;
+  const [isOrderModalShown, setIsModalShown] = React.useState(false);
 
+  let marketPrice = 0;
 
   const handleBuyClick = () => {
     setMode("BUY");
@@ -38,13 +41,13 @@ export default function BuySell() {
 
   const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setTicker(event.target.value);
-    getMarketPriceHttp(ticker).then((r) => {
-      if (typeof r == 'number') {
-        marketPrice = r;
-      } else {
-        marketPrice = 0;
-      }
-    })
+    // getMarketPriceHttp(ticker).then((r) => {
+    //   if (typeof r == 'number') {
+    //     marketPrice = r;
+    //   } else {
+    //     marketPrice = 0;
+    //   }
+    // })
   }
 
   const handleLimitPriceChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -53,9 +56,15 @@ export default function BuySell() {
 
   const handleConfirmClick = () => {
     if (ticker !== "" && numStocks !== 0 && mode !== "NONE" && limitPrice !== 0) {
-      setIsShown(true);
+      setIsPreviewShown(true);
     } else {
-      alert("Enter all required fields.")
+
+      // alert("Enter all required fields.")
+      // <Dialog open={true}>
+      //   <DialogTitle>
+      //     {"Enter all the missing fields!"}
+      //   </DialogTitle>
+      // </Dialog>
     }
 
   };
@@ -64,34 +73,35 @@ export default function BuySell() {
   const handleReset = () => {
     //Erase the input of the input elements
     const inputTickerSymbol = document.getElementById("input-tickerSymbol")
-    if (inputTickerSymbol){
-      inputTickerSymbol.textContent = "";
+    if (inputTickerSymbol) {
+      inputTickerSymbol.nodeValue = null;
     }
 
     const inputLimitPrice = document.getElementById("input-limit-price");
-    if (inputLimitPrice){
-      inputLimitPrice.textContent = "";
+    if (inputLimitPrice) {
+      inputLimitPrice.nodeValue = null;
     }
 
     const inputBuyStockAmount = document.getElementById("input-buy-stock-amount");
-    if (inputBuyStockAmount){
+    if (inputBuyStockAmount) {
       inputBuyStockAmount.textContent = "";
       inputBuyStockAmount.hidden = true;
     }
 
     const inputSellStockAmount = document.getElementById("input-sell-stock-amount");
-    if (inputSellStockAmount){
+    if (inputSellStockAmount) {
       inputSellStockAmount.textContent = ""
       inputSellStockAmount.hidden = true;
     }
 
-    
+
     //Reset the states
-    setIsShown(false);
+    setIsPreviewShown(false);
     setLimitPrice(0);
     setMode("NONE");
     setStockAmount(0);
     setTicker("");
+    setIsModalShown(false);
   }
 
   const handleMakeOrder = async () => {
@@ -101,11 +111,10 @@ export default function BuySell() {
 
       //Create the newOrder of the buy/sell order request
       const newOrder: Order = {
-        tickerSymbol: ticker,
-        stockAmount: numStocks,
-        limitPrice: limitPrice,
-        requestSubmitted: 0,
-        status: "STARTED"
+        symbol: ticker,
+        quantity: numStocks,
+        price: limitPrice,
+        timeStamp : Date()
       }
 
       //Request the order
@@ -118,7 +127,7 @@ export default function BuySell() {
           alert("Buy Order was unsuccessful");
         }
       }
-      else if (mode == "SELL") {
+      else if (mode === "SELL") {
         const response = await sellHttp(newOrder);
 
         if (response && response.token) {
@@ -127,10 +136,22 @@ export default function BuySell() {
           alert("Sell Order was unsuccessful");
         }
       }
+
+      wait(5);
+      setIsModalShown(false);
+
+
     } catch (error: any) {
+
       alert("Order was unsuccessful. Please try again.")
 
     }
+
+    setIsModalShown(true);
+
+    wait(5);
+
+    setIsModalShown(false);
 
 
     console.log("Order attempt completed.")
@@ -142,7 +163,7 @@ export default function BuySell() {
     setStockAmount(Number(result));
   };
 
-  const handleClose = () => setIsShown(false);
+  const handleClose = () => setIsPreviewShown(false);
 
 
   return (
@@ -171,7 +192,7 @@ export default function BuySell() {
 
         </Box>
         <Box display="flex" flexDirection="column" alignItems="start" gap={1}>
-          <h3>Market Price: {marketPrice}</h3>
+          {/* <h3>Market Price: {marketPrice}</h3> */}
           <Box display="flex" flexDirection="row" alignItems="start" textAlign="center" gap={1}>
             <h3>Limit Price: </h3>
             <Input id="input-limit-price" onChange={handleLimitPriceChange} placeholder="Enter Desired Price" />
@@ -183,10 +204,9 @@ export default function BuySell() {
         <Button variant="contained" onClick={handleReset}>Reset</Button>
         {/* TODO:: Make this a DIALOG */}
         <Modal
-          open={isShown}
+          open={isPreviewShown}
           onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+          id="preview-order-modal"
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -201,12 +221,12 @@ export default function BuySell() {
             <Typography id="modal-modal-descr-totalStocks" sx={{ mt: 2 }}>
               Total Number of Stocks: {numStocks}
             </Typography>
-            <Typography id="modal-modal-descr-marketPrice" sx={{ mt: 2 }}>
+            <Typography id="modal-modal-descr-limitPrice" sx={{ mt: 2 }}>
               Limit Price: ${limitPrice}
             </Typography>
-            <Typography id="modal-modal-descr-marketPrice" sx={{ mt: 2 }}>
+            {/* <Typography id="modal-modal-descr-marketPrice" sx={{ mt: 2 }}>
               Total Price: ${Number(limitPrice) * Number(numStocks)}
-            </Typography>
+            </Typography> */}
             <Box display="flex" flexDirection="row">
               <Button variant="contained" onClick={handleMakeOrder} autoFocus>Confirm</Button>
               <Button onClick={handleClose}>Cancel</Button>
@@ -221,8 +241,22 @@ export default function BuySell() {
 type closeHandler = () => void;
 
 function finishOrder(closer: closeHandler) {
-  //Close the dialog box
-  alert("Order was made.");
   closer();
+
+  var open = true;
+
+  //Close the dialog box
+  const dialog = <Dialog
+    open={open}
+  >
+    <DialogTitle>
+      {"Order was Successfully Created!"}
+    </DialogTitle>
+  </Dialog>
+
+  wait(5)
+
+  dialog.props.open  = false;
+
   //Go to positions page
 }
