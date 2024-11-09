@@ -1,5 +1,5 @@
 export interface Order {
-    tickerSymbol: string;
+    ticker: string;
     stockAmount: number;
     limitPrice: number;
     requestSubmitted: number;
@@ -43,14 +43,12 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to make a buy Order request
 export const buyHttp = async (buyOrder : Order) => {
-    const response = await request(`/buy`, {
+    const response = await request(`/orderEntry`, {
         method: "POST",
-        mode: 'no-cors',
         headers: {
             "Content-Type": "application/json",
-            'Authorization': token,
+            'Authorization': `Bearer ${token}`
         },
-
         body: JSON.stringify(
             buyOrder
         ),
@@ -64,15 +62,12 @@ export const buyHttp = async (buyOrder : Order) => {
 
 // Function to make a buy Order request
 export const sellHttp = async (sellOrder : Order) => {
-    const response = await request(`/sell`, {
+    const response = await request(`/orderEntry`, {
         method: "POST",
-        mode: 'no-cors',
         headers: {
             "Content-Type": "application/json",
-            'Authorization': token,
+            'Authorization': `Bearer ${token}`
         },
-        
-
         body: JSON.stringify(
             sellOrder
         ),
@@ -90,7 +85,7 @@ export const getMarketPriceHttp = async (ticker: string) => {
         mode: 'no-cors',
         headers: {
             "Content-Type": "application/json",
-            'Authorization': token,
+            'Authorization': `Bearer ${token}`
         }
     }).catch((error: Error) => {
         console.error(error.message);
