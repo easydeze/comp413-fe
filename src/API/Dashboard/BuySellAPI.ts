@@ -82,7 +82,6 @@ export const sellHttp = async (sellOrder : Order) => {
 export const getMarketPriceHttp = async (ticker: string) => {
     const response = await request(`/stocks/?tickerSymbol=${ticker}`, {
         method: "GET",
-        mode: 'no-cors',
         headers: {
             "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`

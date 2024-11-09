@@ -8,7 +8,7 @@ import {
   sellHttp,
   getMarketPriceHttp,
   Order,
-} from "../../API/Dashboard/BuySelllAPI";
+} from "../../API/Dashboard/BuySellAPI";
 import { Label } from "@mui/icons-material";
 
 const style = {
