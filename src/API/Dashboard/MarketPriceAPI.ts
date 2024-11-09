@@ -1,9 +1,4 @@
-export interface Order {
-    symbol: string;
-    quantity: number;
-    price: number;
-    timeStamp: string;
-}
+
 
 export interface StockMarketPrice {
     tickerSymbol : string;
@@ -13,6 +8,7 @@ export interface StockMarketPrice {
 const token = "Mocktoken"
 
 //API URL for buy and sell
+//Todo: add handler for buy and seperate one for sell
 const BASE_URL = "https://buysellorderhandler-544401150213.us-central1.run.app";
 
 
@@ -40,47 +36,8 @@ const request = async (url: string, options: RequestInit) => {
     }
 };
 
-// Function to make a buy Order request
-export const buyHttp = async (buyOrder : Order) => {
-    const response = await request(`/buy`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': token,
-        },
 
-        body: JSON.stringify(
-            buyOrder
-        ),
-    }).catch((error: Error) => {
-        console.error(error.message);
-    });
-    console.log(response);
-    return response;
-};
-
-
-// Function to make a buy Order request
-export const sellHttp = async (sellOrder : Order) => {
-    const response = await request(`/sell`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': token,
-        },
-        
-
-        body: JSON.stringify(
-            sellOrder
-        ),
-    }).catch((error: Error) => {
-        console.error(error.message);
-    });
-    console.log(response);
-    return response;
-};
-
-//Function to get market Price of a stock
+//Function to get market price of a stock
 export const getMarketPriceHttp = async (ticker: string) => {
     const response = await request(`/stocks/?tickerSymbol=${ticker}`, {
         method: "GET",

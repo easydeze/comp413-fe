@@ -1,9 +1,11 @@
 
 import { Button, Dialog, DialogTitle, Input, Modal, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, Stack } from "@mui/system";
 import React from "react";
 
-import { buyHttp, sellHttp, getMarketPriceHttp, Order } from "../../API/Dashboard/BuySelllAPI"
+import { buyHttp, Order } from "../../API/Dashboard/BuyAPI"
+import { sellHttp } from "../../API/Dashboard/SellAPI"
+import { getMarketPriceHttp, StockMarketPrice } from "../../API/Dashboard/MarketPriceAPI"
 
 
 const style = {
@@ -35,10 +37,24 @@ export default function BuySell() {
 
   const handleBuyClick = () => {
     setMode("buy");
+
+    var buyButton = document.getElementById("buy-button")
+    var sellButton = document.getElementById("sell-button")
+    if (buyButton && sellButton) {
+      buyButton.style.backgroundColor = "blue"
+      sellButton.style.backgroundColor = "gray"
+    }
   };
 
   const handleSellClick = () => {
     setMode("sell");
+
+    var buyButton = document.getElementById("buy-button")
+    var sellButton = document.getElementById("sell-button")
+    if (buyButton && sellButton) {
+      sellButton.style.backgroundColor = "blue"
+      buyButton.style.backgroundColor = "gray"
+    }
   };
 
   const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -56,7 +72,7 @@ export default function BuySell() {
     setLimitPrice(Number(event.target.value));
   }
 
-  const handleConfirmClick = async () => {
+  const handlePreviewClick = async () => {
     if (ticker !== "" && numStocks !== 0 && limitPrice !== 0) {
       setIsPreviewShown(true);
     } else {
@@ -109,54 +125,55 @@ export default function BuySell() {
   const handleMakeOrder = async () => {
     console.log("Make Order ran");
 
-    setIsModalShown(true);
-
-    await timeout(5000)
-
-    setIsModalShown(false);
-
-
-    // try {
-
-    //   //Create the newOrder of the buy/sell order request
-    //   const newOrder: Order = {
-    //     symbol: ticker,
-    //     quantity: numStocks,
-    //     price: limitPrice,
-    //     timeStamp: Date()
-    //   }
-
-    //   //Request the order
-    //   if (mode === "buy") {
-    //     const response = await buyHttp(newOrder);
-
-    //     if (response && response.token) {
-    //     } else {
-    //     }
-    //   }
-    //   else if (mode === "sell") {
-    //     const response = await sellHttp(newOrder);
-
-    //     if (response && response.token) {
-    //     } else {
-    //     }
-    //   }
-
-    //   setIsModalShown(true);
-
-    //   await timeout(5000)
-
-    //   setIsModalShown(false);
-
-    // } catch (error: any) {
+    const newOrder: Order = {
+      symbol: ticker,
+      quantity: numStocks,
+      price: limitPrice,
+      timeStamp: Date()
+    }
 
 
-    //   setErrorModalMessage("Order was unsuccessful. Please try again.")
-    //   setIsErrorModalShown(true)
-    //   await timeout(3000)
-    //   setIsErrorModalShown(false)
+    try {
 
-    // }
+      //Request the order
+      if (mode === "buy") {
+        const response = await buyHttp(newOrder);
+
+        if (response) {
+          setIsModalShown(true);
+
+          await timeout(5000)
+
+          setIsModalShown(false);
+
+        } else {
+          console.error(response);
+        }
+      }
+      else if (mode === "sell") {
+        const response = await sellHttp(newOrder);
+
+        if (response) {
+          setIsModalShown(true);
+
+          await timeout(5000)
+
+          setIsModalShown(false);
+
+        } else {
+          console.error(response);
+        }
+      }
+
+    } catch (error: any) {
+
+
+      setErrorModalMessage("Order was unsuccessful. Please try again.")
+      setIsErrorModalShown(true)
+      await timeout(3000)
+      setIsErrorModalShown(false)
+
+    }
 
     console.log("Order attempt completed.")
   }
@@ -171,34 +188,28 @@ export default function BuySell() {
 
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="start">
+    <Stack direction="column" spacing={3}>
       <h2>Buy and Sell</h2>
-      {/* <Box display="flex" flexDirection="column" alignItems="start" gap={1}> */}
       <p>As of {Date()}</p>
-      <Box display="flex" flexDirection="row" alignItems="start" gap={1}>
-        {/* <h3>Ticker: </h3> */}
-        <Input id="input-ticker-symbol" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
-      </Box>
+      <Input id="input-ticker-symbol" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
 
 
-      <Box display="flex" flexDirection="row" alignItems="start">
-        <Button variant="contained" onClick={handleBuyClick}>Buy</Button>
+      <Stack direction="row" spacing={2}>
+        <Button id="buy-button" variant="contained" onClick={handleBuyClick}>Buy</Button>
+        <Button id="sell-button" variant="contained" onClick={handleSellClick}>Sell</Button>
+      </Stack>
 
-        <Button variant="contained" onClick={handleSellClick}>Sell</Button>
-
-      </Box>
       <Input id="input-buy-stock-amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode}></Input>
 
-      <Box display="flex" flexDirection="column" alignItems="start" gap={1}>
-        <Box display="flex" flexDirection="row" alignItems="start" textAlign="center" gap={1}>
+      <Stack direction="column" spacing={2}>
+        <Stack direction="row" spacing={1}>
           <Input id="input-limit-price" onChange={handleLimitPriceChange} placeholder="Enter Limit Price" />
-        </Box>
-
+        </Stack>
         <p>Total For Order: ${numStocks * limitPrice}</p>
-      </Box>
+      </Stack>
 
 
-      <Button variant="contained" onClick={handleConfirmClick}>Preview Order</Button>
+      <Button variant="contained" onClick={handlePreviewClick}>Preview Order</Button>
 
       <Modal
         open={isPreviewShown}
@@ -224,7 +235,7 @@ export default function BuySell() {
           {/* <Typography id="modal-modal-descr-marketPrice" sx={{ mt: 2 }}>
               Total Price: ${Number(limitPrice) * Number(numStocks)}
             </Typography> */}
-          <Box display="flex" flexDirection="row">
+          <Stack direction="row">
             <Button variant="contained" onClick={() => {
 
               handleClose()
@@ -233,7 +244,7 @@ export default function BuySell() {
 
             }} autoFocus>Confirm</Button>
             <Button onClick={handleClose}>Cancel</Button>
-          </Box>
+          </Stack>
         </Box>
       </Modal>
 
@@ -249,7 +260,7 @@ export default function BuySell() {
         </DialogTitle>
       </Dialog>
 
-    </Box>
+    </Stack>
   );
 }
 
