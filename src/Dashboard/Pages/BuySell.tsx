@@ -1,37 +1,38 @@
 
-import { Button, Dialog, DialogTitle, Input, Modal, Typography } from "@mui/material";
+import { Button, Dialog, DialogTitle, Input, Modal, TextField, Typography } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import React from "react";
 
 import { buyHttp, Order } from "../../API/Dashboard/BuyAPI"
 import { sellHttp } from "../../API/Dashboard/SellAPI"
-import { getMarketPriceHttp, StockMarketPrice } from "../../API/Dashboard/MarketPriceAPI"
-
+import { getMarketPriceHttp } from "../../API/Dashboard/MarketPriceAPI"
 
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "white",
-  border: '2px solid #000',
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
 
 
-export default function BuySell() {
+const buttonStyle = { 
+  height: '30px',
+}
 
-  //STATES
+export default function BuySell() {
   const [isPreviewShown, setIsPreviewShown] = React.useState(false);
+  const [isErrorModalShown, setIsErrorModalShown] = React.useState(false);
+  const [isModalShown, setIsModalShown] = React.useState(false);
+  const [errorModalMessage, setErrorModalMessage] = React.useState("");
   const [mode, setMode] = React.useState("buy");
-  const [ticker, setTicker] = React.useState('');
+  const [ticker, setTicker] = React.useState("");
   const [numStocks, setStockAmount] = React.useState(0);
   const [limitPrice, setLimitPrice] = React.useState(0);
-  const [isOrderModalShown, setIsModalShown] = React.useState(false);
-  const [isErrorModalShown, setIsErrorModalShown] = React.useState(false);
-  const [errorModalMessage, setErrorModalMessage] = React.useState("");
 
   let marketPrice = 0;
 
@@ -57,61 +58,60 @@ export default function BuySell() {
     }
   };
 
-  const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleTickerChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setTicker(event.target.value);
-    // getMarketPriceHttp(ticker).then((r) => {
-    //   if (typeof r == 'number') {
-    //     marketPrice = r;
-    //   } else {
-    //     marketPrice = 0;
-    //   }
-    // })
-  }
+    getMarketPriceHttp(ticker).then((r) => {
+      if (typeof r == "number") {
+        marketPrice = r;
+      } else {
+        marketPrice = 0;
+      }
+    });
+  };
 
-  const handleLimitPriceChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+  const handleLimitPriceChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
     setLimitPrice(Number(event.target.value));
-  }
+  };
 
   const handlePreviewClick = async () => {
     if (ticker !== "" && numStocks !== 0 && limitPrice !== 0) {
       setIsPreviewShown(true);
     } else {
-      setErrorModalMessage("Enter the required information")
-
-      setIsErrorModalShown(true)
-
-      await timeout(5000)
-
-      setIsErrorModalShown(false)
+      alert("Enter all required fields.");
     }
-
   };
-
 
   const handleReset = () => {
     //Erase the input of the input elements
-    const inputTickerSymbol = document.getElementById("input-tickerSymbol")
+    const inputTickerSymbol = document.getElementById("input-tickerSymbol");
     if (inputTickerSymbol) {
-      inputTickerSymbol.nodeValue = null;
+      inputTickerSymbol.textContent = "";
     }
 
     const inputLimitPrice = document.getElementById("input-limit-price");
     if (inputLimitPrice) {
-      inputLimitPrice.nodeValue = null;
+      inputLimitPrice.textContent = "";
     }
 
-    const inputBuyStockAmount = document.getElementById("input-buy-stock-amount");
+    const inputBuyStockAmount = document.getElementById(
+      "input-buy-stock-amount"
+    );
     if (inputBuyStockAmount) {
       inputBuyStockAmount.textContent = "";
       inputBuyStockAmount.hidden = true;
     }
 
-    const inputSellStockAmount = document.getElementById("input-sell-stock-amount");
+    const inputSellStockAmount = document.getElementById(
+      "input-sell-stock-amount"
+    );
     if (inputSellStockAmount) {
-      inputSellStockAmount.textContent = ""
+      inputSellStockAmount.textContent = "";
       inputSellStockAmount.hidden = true;
     }
-
 
     //Reset the states
     setIsPreviewShown(false);
@@ -119,8 +119,7 @@ export default function BuySell() {
     setMode("NONE");
     setStockAmount(0);
     setTicker("");
-    setIsModalShown(false);
-  }
+  };
 
   const handleMakeOrder = async () => {
     console.log("Make Order ran");
@@ -175,41 +174,39 @@ export default function BuySell() {
 
     }
 
-    console.log("Order attempt completed.")
-  }
+    console.log("Order attempt completed.");
+  };
 
-  const handleStockNumberChange = (event: { target: { value: string; }; }) => {
-    const result = event.target.value.replace(/\D/g, '');
+  const handleStockNumberChange = (event: { target: { value: string } }) => {
+    const result = event.target.value.replace(/\D/g, "");
 
     setStockAmount(Number(result));
   };
 
   const handleClose = () => setIsPreviewShown(false);
 
-
   return (
     <Stack direction="column" spacing={3}>
-      <h2>Buy and Sell</h2>
+      <h1>Buy and Sell Stocks</h1>
       <p>As of {Date()}</p>
-      <Input id="input-ticker-symbol" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
+      <TextField required id="input-ticker-symbol" label="Ticker Symbol" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
 
 
-      <Stack direction="row" spacing={2}>
-        <Button id="buy-button" variant="contained" onClick={handleBuyClick}>Buy</Button>
-        <Button id="sell-button" variant="contained" onClick={handleSellClick}>Sell</Button>
+      <Stack direction="row" spacing={{ xs: 1, sm: 2 }} sx={{ justifyContent: 'center', alignItems: 'center' }} >
+        <Button id="buy-button" variant="contained" fullWidth style={buttonStyle} onClick={handleBuyClick}>Buy</Button>
+        <Button id="sell-button" variant="contained" fullWidth style={buttonStyle} onClick={handleSellClick}>Sell</Button>
       </Stack>
 
-      <Input id="input-buy-stock-amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode}></Input>
+      <TextField required id="input-buy-stock-amount" label="Stock Amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode} type="number"/>
 
       <Stack direction="column" spacing={2}>
-        <Stack direction="row" spacing={1}>
-          <Input id="input-limit-price" onChange={handleLimitPriceChange} placeholder="Enter Limit Price" />
-        </Stack>
-        <p>Total For Order: ${numStocks * limitPrice}</p>
+        <TextField required id="input-limit-price" label="Limit Price" onChange={handleLimitPriceChange} placeholder="Enter Limit Price" type="number" />
+
+        <h4>Total For Order: ${numStocks * limitPrice}</h4>
       </Stack>
 
 
-      <Button variant="contained" onClick={handlePreviewClick}>Preview Order</Button>
+      <Button variant="contained" style={buttonStyle} onClick={handlePreviewClick}>Preview Order</Button>
 
       <Modal
         open={isPreviewShown}
@@ -248,13 +245,13 @@ export default function BuySell() {
         </Box>
       </Modal>
 
-      <Dialog open={isOrderModalShown}>
+      <Dialog open={isModalShown}>
         <DialogTitle>
           {"Order was Successfully Created!"}
         </DialogTitle>
       </Dialog>
 
-      <Dialog open={isErrorModalShown}>
+      <Dialog id="error-modal" open={isErrorModalShown}>
         <DialogTitle>
           {errorModalMessage}
         </DialogTitle>
@@ -265,8 +262,7 @@ export default function BuySell() {
 }
 
 
-function timeout(delay: number) {
-  return new Promise(res => setTimeout(res, delay));
-}
+function timeout(milliseconds: number) {
 
+}
 
