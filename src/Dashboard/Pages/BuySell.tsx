@@ -20,7 +20,7 @@ const style = {
 };
 
 
-const buttonStyle = { 
+const buttonStyle = {
   height: '30px',
 }
 
@@ -31,6 +31,7 @@ export default function BuySell() {
   const [errorModalMessage, setErrorModalMessage] = React.useState("");
   const [mode, setMode] = React.useState("buy");
   const [ticker, setTicker] = React.useState("");
+  const [tickerError, setTickerError] = React.useState(false);
   const [numStocks, setStockAmount] = React.useState(0);
   const [limitPrice, setLimitPrice] = React.useState(0);
 
@@ -58,10 +59,10 @@ export default function BuySell() {
     }
   };
 
-  const handleTickerChange = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
+  const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setTicker(event.target.value);
+
+    setTickerError(false)
     getMarketPriceHttp(ticker).then((r) => {
       if (typeof r == "number") {
         marketPrice = r;
@@ -69,6 +70,8 @@ export default function BuySell() {
         marketPrice = 0;
       }
     });
+
+
   };
 
   const handleLimitPriceChange = (event: {
@@ -78,10 +81,9 @@ export default function BuySell() {
   };
 
   const handlePreviewClick = async () => {
+
     if (ticker !== "" && numStocks !== 0 && limitPrice !== 0) {
       setIsPreviewShown(true);
-    } else {
-      alert("Enter all required fields.");
     }
   };
 
@@ -116,7 +118,7 @@ export default function BuySell() {
     //Reset the states
     setIsPreviewShown(false);
     setLimitPrice(0);
-    setMode("NONE");
+    setMode("buy");
     setStockAmount(0);
     setTicker("");
   };
@@ -187,9 +189,11 @@ export default function BuySell() {
 
   return (
     <Stack direction="column" spacing={3}>
+
+
       <h1>Buy and Sell Stocks</h1>
       <p>As of {Date()}</p>
-      <TextField required id="input-ticker-symbol" label="Ticker Symbol" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" />
+      <TextField required id="input-ticker-symbol" label="Ticker Symbol" onChange={handleTickerChange} placeholder="Enter Ticker Symbol" error={tickerError} helperText={tickerError ? "Please enter a ticker symbol" : ""} />
 
 
       <Stack direction="row" spacing={{ xs: 1, sm: 2 }} sx={{ justifyContent: 'center', alignItems: 'center' }} >
@@ -197,16 +201,18 @@ export default function BuySell() {
         <Button id="sell-button" variant="contained" fullWidth style={buttonStyle} onClick={handleSellClick}>Sell</Button>
       </Stack>
 
-      <TextField required id="input-buy-stock-amount" label="Stock Amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode} type="number"/>
+      <TextField required id="input-buy-stock-amount" autoComplete="false" label="Stock Amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode} type="number" />
 
       <Stack direction="column" spacing={2}>
-        <TextField required id="input-limit-price" label="Limit Price" onChange={handleLimitPriceChange} placeholder="Enter Limit Price" type="number" />
+        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder="Enter Limit Price" type="number" />
 
         <h4>Total For Order: ${numStocks * limitPrice}</h4>
       </Stack>
 
 
-      <Button variant="contained" style={buttonStyle} onClick={handlePreviewClick}>Preview Order</Button>
+      <Button variant="contained" style={buttonStyle} onClick={handlePreviewClick} type="submit">Preview Order</Button>
+
+
 
       <Modal
         open={isPreviewShown}
@@ -256,13 +262,12 @@ export default function BuySell() {
           {errorModalMessage}
         </DialogTitle>
       </Dialog>
-
     </Stack>
   );
 }
 
 
-function timeout(milliseconds: number) {
-
+function timeout(delay: number) {
+  return new Promise(res => setTimeout(res, delay));
 }
 
