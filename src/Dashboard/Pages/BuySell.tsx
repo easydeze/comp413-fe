@@ -29,7 +29,7 @@ export default function BuySell() {
   const [isErrorModalShown, setIsErrorModalShown] = React.useState(false);
   const [isModalShown, setIsModalShown] = React.useState(false);
   const [errorModalMessage, setErrorModalMessage] = React.useState("");
-  const [mode, setMode] = React.useState("buy");
+  const [mode, setMode] = React.useState("");
   const [ticker, setTicker] = React.useState("");
   const [tickerError, setTickerError] = React.useState(false);
   const [numStocks, setStockAmount] = React.useState(0);
@@ -210,7 +210,13 @@ export default function BuySell() {
       </Stack>
 
 
-      <Button variant="contained" style={buttonStyle} onClick={handlePreviewClick} type="submit">Preview Order</Button>
+      <Button 
+      variant="contained" 
+      disabled={!ticker || !mode || !numStocks || !limitPrice }
+       style={buttonStyle} onClick={handlePreviewClick} 
+       type="submit">
+        Preview Order
+        </Button>
 
 
 
@@ -262,7 +268,7 @@ export default function BuySell() {
           {errorModalMessage}
         </DialogTitle>
       </Dialog>
-    </Stack>
+    </Stack >
   );
 }
 
