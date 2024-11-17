@@ -23,8 +23,7 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
       const response = await loginHttp(username, password);
 
       if (response && response.token) {
-        const { token } = response;
-        onLogin(username, token);
+        onLogin(username, response.token);
         toggleLogin(false);
         setError("");
       } else {

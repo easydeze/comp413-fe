@@ -11,10 +11,6 @@ import {
 } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
-interface MovementProps {
-  token: string;
-}
-
 interface Movement {
   symbol: string;
   difference: number;
@@ -34,20 +30,23 @@ const DetailedMovement = (difference: number) => {
   );
 };
 
-export default function Movements({ token }: MovementProps) {
+export default function Movements() {
   // API call to get top 3 movements.
   let [movements, setMovements] = useState<Movement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     setIsLoading(true);
     const fetchMovements = async () => {
       try {
-        const response = await homeMovementsHttp(token);
-        if (response) {
-          setMovements(response.movements);
-          setIsLoading(false);
+        if (token) {
+          const response = await homeMovementsHttp(token);
+          if (response) {
+            setMovements(response.movements);
+            setIsLoading(false);
+          }
         }
       } catch (error) {
         setError(true);
