@@ -64,9 +64,11 @@ function OrderRow({ order }: { order: PackagedOrder }) {
             {status ? <ExpandMoreIcon /> : <ExpandLessIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">{order.date.toString()}</TableCell>
-        <TableCell align="left">{`YOU BOUGHT ${order.symbol_desc} (${order.symbol}) (${order.type})`}</TableCell>
-        <TableCell align="left">{`$${order.amount}`}</TableCell>
+        <TableCell align="left">
+          {new Date(order.date).toDateString()}
+        </TableCell>
+        <TableCell align="left">{`YOU BOUGHT ${order.symbol}`}</TableCell>
+        <TableCell align="left">{`$${order.shares * order.price}`}</TableCell>
         <TableCell align="left">{`$${order.cash_balance}`}</TableCell>
       </TableRow>
       <TableRow>
@@ -77,7 +79,9 @@ function OrderRow({ order }: { order: PackagedOrder }) {
                 <TableBody>
                   <TableRow>
                     <TableCell component="th">{"Date: "}</TableCell>
-                    <TableCell align="left">{order.date.toString()}</TableCell>
+                    <TableCell align="left">
+                      {new Date(order.date).toDateString()}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Symbol: "}</TableCell>
@@ -202,17 +206,17 @@ const OrdersTable = () => {
         const response = await getOrdersHTTP();
 
         if (response) {
-          setOrdersList(response.json());
+          setOrdersList(response);
 
           console.log("Fetched Orders.");
         } else {
           console.log("Invalid credentials. Please try again.");
         }
       } catch (error: any) {
-        console.log("Login failed. Please try again.");
+        console.log("Order fetch failed. Please try again.");
       }
     })();
-  });
+  }, []);
 
   return (
     <div>
