@@ -11,8 +11,6 @@ const Dashboard: React.FC = () => {
   const [selectView, setSelectView] = useState("Home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loginScreen, setLoginScreen] = useState(true);
-  const [username, setUsername] = useState("");
-  const [token, setToken] = useState("");
 
   const handleView = (view: string) => {
     setSelectView(view);
@@ -29,24 +27,27 @@ const Dashboard: React.FC = () => {
   const handleLogout = () => {
     setLoginScreen(true);
     setSelectView("Home");
-    setUsername(""); // Clear username
-    setToken(""); // Clear token on logout
+    sessionStorage.setItem("username", ""); // Clear username
+    sessionStorage.setItem("token", "");
   };
 
   const handleLogin = (name: string, newToken: string) => {
-    setUsername(name);
-    setToken(newToken);
     setLoginScreen(false);
+    sessionStorage.setItem("username", name);
+    sessionStorage.setItem("token", newToken);
   };
 
   return (
     <>
-      <Header toggleSidebar={() => toggleSidebar(true)} username={username} />
+      <Header
+        toggleSidebar={() => toggleSidebar(true)}
+        username={sessionStorage.getItem("username") ?? ""}
+      />
       <div id="contentContainer">
         {selectView === "Home" ? (
-          <Home token={token} />
+          <Home />
         ) : selectView === "Activity" ? (
-          <Activity token={token} />
+          <Activity />
         ) : (
           <BuySell />
         )}
@@ -56,7 +57,7 @@ const Dashboard: React.FC = () => {
         handleView={handleView}
         toggleSidebar={toggleSidebar}
         handleLogout={handleLogout}
-        username={username}
+        username={sessionStorage.getItem("username") ?? ""}
       />
       {loginScreen && <Login toggleLogin={toggleLogin} onLogin={handleLogin} />}
     </>

@@ -13,15 +13,12 @@ import {
 } from "@mui/material";
 import { Popup } from "../../Popup";
 
-interface TransfersProps {
-  token: string;
-}
-
-const Transfers = ({ token }: TransfersProps) => {
+const Transfers = () => {
   const [alignment, setAlignment] = React.useState("deposit");
   const [amount, setAmount] = React.useState(0);
   const [popup, setPopup] = React.useState("");
   const [neg, setNeg] = React.useState(false);
+  const token = sessionStorage.getItem("token");
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -37,7 +34,7 @@ const Transfers = ({ token }: TransfersProps) => {
   };
 
   const submitTransaction = () => {
-    if (amount > 0) {
+    if (amount > 0 && token) {
       transferHttp(alignment, amount, token);
       if (alignment == "withdrew") {
         setPopup(`Withdrew $${amount}.`);

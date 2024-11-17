@@ -2,16 +2,12 @@ import Movements from "./Movements";
 import Balance from "./Balance";
 import { Stack } from "@mui/system";
 
-interface HomeProps {
-  token: string;
-}
-
-export default function Home({ token }: HomeProps) {
-  return token != "" ? (
+export default function Home() {
+  return sessionStorage.getItem("token") != "" ? (
     <>
       <Stack direction="row" spacing={10}>
-        <Balance token={token} />
-        <Movements token={token} />
+        <Balance />
+        <Movements />
       </Stack>
     </>
   ) : (
