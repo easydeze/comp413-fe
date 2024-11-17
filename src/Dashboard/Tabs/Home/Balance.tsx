@@ -7,7 +7,7 @@ export default function Balance() {
   const [yBalances, setYBalances] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     const fetchBalances = async () => {

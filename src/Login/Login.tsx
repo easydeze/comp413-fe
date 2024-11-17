@@ -41,7 +41,7 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
     }
   };
 
-  return (
+  return !sessionStorage.getItem("token") ? (
     <>
       <main id="login-modal" className="modal">
         <Box className="modal-content">
@@ -94,6 +94,8 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
         </Box>
       </main>
     </>
+  ) : (
+    <></>
   );
 };
 

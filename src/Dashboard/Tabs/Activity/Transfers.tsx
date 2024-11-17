@@ -18,7 +18,7 @@ const Transfers = () => {
   const [amount, setAmount] = React.useState(0);
   const [popup, setPopup] = React.useState("");
   const [neg, setNeg] = React.useState(false);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
