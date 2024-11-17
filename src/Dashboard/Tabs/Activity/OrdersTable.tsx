@@ -11,9 +11,10 @@ import {
   Stack,
   TableRow,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandMore";
+import { getOrdersHTTP } from "../../../API/Dashboard/OrderAPI";
 //import PackagedOrder from "./PackagedOrder";
 
 interface PackagedOrder {
@@ -86,11 +87,11 @@ function OrderRow({ order }: { order: PackagedOrder }) {
                     <TableCell component="th">
                       {"Symbol description: "}
                     </TableCell>
-                    <TableCell align="left">{order.symbol_desc}</TableCell>
+                    <TableCell align="left">To Be Deleted??</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Type: "}</TableCell>
-                    <TableCell align="left">{order.type}</TableCell>
+                    <TableCell align="left">To Be Deleted</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Shares: "}</TableCell>
@@ -102,13 +103,13 @@ function OrderRow({ order }: { order: PackagedOrder }) {
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Amount: "}</TableCell>
-                    <TableCell align="left">{order.amount}</TableCell>
+                    <TableCell align="left">
+                      {order.shares * order.price}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Settlement date:"}</TableCell>
-                    <TableCell align="left">
-                      {order.settlement_date.toString()}
-                    </TableCell>
+                    <TableCell align="left">To Be Deleted</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -120,43 +121,99 @@ function OrderRow({ order }: { order: PackagedOrder }) {
   );
 }
 
-const orders_list: PackagedOrder[] = [
-  packageOrder(
-    new Date(Date.now()),
-    "AAPL",
-    "APPLE INC",
-    "CASH",
-    3.6,
-    220.59,
-    -900,
-    90000,
-    new Date(Date.now())
-  ),
-  packageOrder(
-    new Date(Date.now()),
-    "ABC",
-    "APPLE INC",
-    "CASH",
-    3.6,
-    220.59,
-    -900,
-    90000,
-    new Date(Date.now())
-  ),
-  packageOrder(
-    new Date(Date.now()),
-    "DEF",
-    "APPLE INC",
-    "CASH",
-    3.6,
-    220.59,
-    -900,
-    90000,
-    new Date(Date.now())
-  ),
-];
+// const orders_list: PackagedOrder[] = [
+//   packageOrder(
+//     new Date(Date.now()),
+//     "AAPL",
+//     "APPLE INC",
+//     "CASH",
+//     3.6,
+//     220.59,
+//     -900,
+//     90000,
+//     new Date(Date.now())
+//   ),
+//   packageOrder(
+//     new Date(Date.now()),
+//     "ABC",
+//     "APPLE INC",
+//     "CASH",
+//     3.6,
+//     220.59,
+//     -900,
+//     90000,
+//     new Date(Date.now())
+//   ),
+//   packageOrder(
+//     new Date(Date.now()),
+//     "DEF",
+//     "APPLE INC",
+//     "CASH",
+//     3.6,
+//     220.59,
+//     -900,
+//     90000,
+//     new Date(Date.now())
+//   ),
+// ];
 
 const OrdersTable = () => {
+  const dummy_orders: PackagedOrder[] = [
+    packageOrder(
+      new Date(Date.now()),
+      "AAPL",
+      "APPLE INC",
+      "CASH",
+      3.6,
+      220.59,
+      -900,
+      90000,
+      new Date(Date.now())
+    ),
+    packageOrder(
+      new Date(Date.now()),
+      "ABC",
+      "APPLE INC",
+      "CASH",
+      3.6,
+      220.59,
+      -900,
+      90000,
+      new Date(Date.now())
+    ),
+    packageOrder(
+      new Date(Date.now()),
+      "DEF",
+      "APPLE INC",
+      "CASH",
+      3.6,
+      220.59,
+      -900,
+      90000,
+      new Date(Date.now())
+    ),
+  ];
+
+  let [orders_list, setOrdersList] = useState(dummy_orders);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getOrdersHTTP();
+
+        if (response) {
+          setOrdersList(response.json());
+
+          console.log("Fetched Orders.");
+        } else {
+          console.log("Invalid credentials. Please try again.");
+        }
+      } catch (error: any) {
+        console.log("Login failed. Please try again.");
+      }
+    })();
+  });
+
   return (
     <div>
       <Stack marginTop={5}>
