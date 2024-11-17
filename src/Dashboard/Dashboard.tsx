@@ -6,6 +6,8 @@ import Home from "./Tabs/Home/Home";
 import Activity from "./Tabs/Activity/Activity";
 import BuySell from "./Tabs/BuySell/BuySell";
 import Login from "../Login/Login";
+import { stockHTTP } from "../API/Stocks/StocksAPI";
+import { useEffect } from "react";
 
 const Dashboard: React.FC = () => {
   const [selectView, setSelectView] = useState("Home");
@@ -38,6 +40,20 @@ const Dashboard: React.FC = () => {
     setToken(newToken);
     setLoginScreen(false);
   };
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      try {
+        const response = await stockHTTP(token);
+        if (response) {
+          console.log("STOCK HTTP:", response);
+        }
+      } catch (error) {
+        console.log("STOCK HTTP ERROR:", error);
+      }
+    };
+    fetchStocks();
+  }, [token]);
 
   return (
     <>
