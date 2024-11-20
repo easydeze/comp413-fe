@@ -43,7 +43,7 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to make a buy Order request
 export const buyHttp = async (buyOrder : Order) => {
-    const response = await request(`/buy`, {
+    const response : Promise<any> = await request(`/buy`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -55,6 +55,7 @@ export const buyHttp = async (buyOrder : Order) => {
         ),
     }).catch((error: Error) => {
         console.error(error.message);
+        throw error
     });
     console.log(response);
     return response;

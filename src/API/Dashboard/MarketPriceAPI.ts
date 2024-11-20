@@ -9,7 +9,7 @@ const token = "Mocktoken"
 
 //API URL for buy and sell
 //Todo: add handler for buy and seperate one for sell
-const BASE_URL = "https://buysellorderhandler-544401150213.us-central1.run.app";
+const BASE_URL = "https://getmarketprice-544401150213.us-central1.run.app"
 
 
 // Helper function to handle requests
@@ -37,14 +37,14 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 
-//Function to get market price of a stock
+//Function to get market Price of a stock
 export const getMarketPriceHttp = async (ticker: string) => {
-    const response = await request(`/stocks/?tickerSymbol=${ticker}`, {
+    const response : Promise<any> = await request(`/getMarketPrice?tickersymbol=${ticker}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': token,
         }
+        
     }).catch((error: Error) => {
         console.error(error.message);
     });

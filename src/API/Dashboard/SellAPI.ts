@@ -10,12 +10,13 @@ const token = "Mocktoken"
 
 //API URL for buy and sell
 //Todo: add handler for buy and seperate one for sell
-const BASE_URL = "https://buysellorderhandler-544401150213.us-central1.run.app";
+const BASE_URL = "https://sellorderhandler-544401150213.us-central1.run.app";
 
 
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
+        console.log("JSON: " + options);
         const response = await fetch(`${BASE_URL}${url}`, options);
         console.log(response);
 
@@ -40,7 +41,7 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to make a buy Order request
 export const sellHttp = async (sellOrder : Order) => {
-    const response = await request(`/sell`, {
+    const response : Promise<any> = await request(`/sell`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

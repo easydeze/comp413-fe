@@ -3,9 +3,8 @@ import { Button, Dialog, DialogTitle, Input, Modal, TextField, Typography } from
 import { Box, Stack } from "@mui/system";
 import React from "react";
 
-import { buyHttp, Order } from "../../API/Dashboard/BuyAPI"
-import { sellHttp } from "../../API/Dashboard/SellAPI"
-import { getMarketPriceHttp } from "../../API/Dashboard/MarketPriceAPI"
+import { buyHttp, sellHttp, Order } from "../../API/Dashboard/BuySellAPI"
+import { getMarketPriceHttp } from "../../API/Dashboard/MarketPriceAPI";
 
 const style = {
   position: "absolute" as "absolute",
@@ -25,6 +24,7 @@ const buttonStyle = {
 }
 
 export default function BuySell() {
+  //STATES
   const [isPreviewShown, setIsPreviewShown] = React.useState(false);
   const [isErrorModalShown, setIsErrorModalShown] = React.useState(false);
   const [isModalShown, setIsModalShown] = React.useState(false);
@@ -63,10 +63,17 @@ export default function BuySell() {
     setTicker(event.target.value);
 
     setTickerError(false)
+
     getMarketPriceHttp(ticker).then((r) => {
-      if (typeof r == "number") {
-        marketPrice = r;
+      console.log("Market Price after change for " + ticker)
+      console.log(r.marketPrice)
+
+      if (typeof r.marketPrice == "number") {
+        setTickerError(false)
+        marketPrice = r.marketPrice;
+        //alert("Market Price for " + ticker + "is :" + marketPrice)
       } else {
+        setTickerError(true)
         marketPrice = 0;
       }
     });
@@ -91,6 +98,7 @@ export default function BuySell() {
     //Erase the input of the input elements
     const inputTickerSymbol = document.getElementById("input-tickerSymbol");
     if (inputTickerSymbol) {
+
       inputTickerSymbol.textContent = "";
     }
 
@@ -118,7 +126,7 @@ export default function BuySell() {
     //Reset the states
     setIsPreviewShown(false);
     setLimitPrice(0);
-    setMode("buy");
+    setMode("");
     setStockAmount(0);
     setTicker("");
   };
@@ -127,52 +135,49 @@ export default function BuySell() {
     console.log("Make Order ran");
 
     const newOrder: Order = {
-      symbol: ticker,
+      tickerSymbol: ticker,
       quantity: numStocks,
-      price: limitPrice,
-      timeStamp: Date()
+      limitPrice: limitPrice,
+      timestamp: Date()
     }
 
 
     try {
 
       //Request the order
-      if (mode === "buy") {
-        const response = await buyHttp(newOrder);
+      const response = mode === "buy" ? await buyHttp(newOrder) : await sellHttp(newOrder);
+      if (response) {
+        //Close the preview order modal
+        handleClose()
 
-        if (response) {
-          setIsModalShown(true);
+        //Show success modal for 5 seconds
+        setIsModalShown(true);
+        await timeout(5000)
+        setIsModalShown(false);
 
-          await timeout(5000)
+        //Reset the input fields on the page
+        handleReset();
 
-          setIsModalShown(false);
+      } else {
 
-        } else {
-          console.error(response);
-        }
+        console.error("ERROR: ")
+
+        //Set and Show the error message for 5 seconds
+        setErrorModalMessage("Order failed to be created. Try again.")
+        setIsErrorModalShown(true)
+        await timeout(1000)
+        setIsErrorModalShown(false);
+
       }
-      else if (mode === "sell") {
-        const response = await sellHttp(newOrder);
-
-        if (response) {
-          setIsModalShown(true);
-
-          await timeout(5000)
-
-          setIsModalShown(false);
-
-        } else {
-          console.error(response);
-        }
-      }
-
     } catch (error: any) {
 
+      console.error("ERROR: " + error.message)
 
-      setErrorModalMessage("Order was unsuccessful. Please try again.")
+      //Set and Show the error message for 5 seconds
+      setErrorModalMessage(error.message + "\nOrder failed to be created. Try again.")
       setIsErrorModalShown(true)
-      await timeout(3000)
-      setIsErrorModalShown(false)
+      await timeout(1000)
+      setIsErrorModalShown(false);
 
     }
 
@@ -204,21 +209,27 @@ export default function BuySell() {
       <TextField required id="input-buy-stock-amount" autoComplete="false" label="Stock Amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode} type="number" />
 
       <Stack direction="column" spacing={2}>
-        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder="Enter Limit Price" type="number" />
+        {/* <Stack direction="row"  spacing={{ xs: 1, sm: 2 }} sx={{ justifyContent: 'center', alignItems: 'center' }} >
+        <p>Market Price: {marketPrice}</p>
+        <p>Limit Price: </p>
+        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={marketPrice !== 0 ? ""+marketPrice : "Enter Limit Price"} type="number" fullWidth/>
+
+        </Stack> */}
+
+        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={marketPrice !== 0 ? "" + marketPrice : "Enter Limit Price"} type="number" fullWidth />
+
 
         <h4>Total For Order: ${numStocks * limitPrice}</h4>
       </Stack>
 
 
-      <Button 
-      variant="contained" 
-      disabled={!ticker || !mode || !numStocks || !limitPrice }
-       style={buttonStyle} onClick={handlePreviewClick} 
-       type="submit">
+      <Button
+        variant="contained"
+        disabled={!ticker || !mode || !numStocks || !limitPrice}
+        style={buttonStyle} onClick={handlePreviewClick}
+        type="submit">
         Preview Order
-        </Button>
-
-
+      </Button>
 
       <Modal
         open={isPreviewShown}
@@ -247,7 +258,7 @@ export default function BuySell() {
           <Stack direction="row">
             <Button variant="contained" onClick={() => {
 
-              handleClose()
+
 
               handleMakeOrder()
 

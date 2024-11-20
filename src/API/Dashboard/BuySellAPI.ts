@@ -1,9 +1,9 @@
 export interface Order {
-    ticker: string;
-    stockAmount: number;
+    tickerSymbol: string;
+    quantity: number;
     limitPrice: number;
-    requestSubmitted: number;
-    status: string;
+    timestamp: string;
+
 }
 
 export interface StockMarketPrice {
@@ -43,11 +43,10 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to make a buy Order request
 export const buyHttp = async (buyOrder : Order) => {
-    const response = await request(`/orderEntry`, {
+    const response : Promise<any> = await request(`/buyOrderEntry`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(
             buyOrder
@@ -62,30 +61,14 @@ export const buyHttp = async (buyOrder : Order) => {
 
 // Function to make a buy Order request
 export const sellHttp = async (sellOrder : Order) => {
-    const response = await request(`/orderEntry`, {
+    const response = await request(`/sellOrderEntry`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(
             sellOrder
         ),
-    }).catch((error: Error) => {
-        console.error(error.message);
-    });
-    console.log(response);
-    return response;
-};
-
-//Function to get market Price of a stock
-export const getMarketPriceHttp = async (ticker: string) => {
-    const response = await request(`/stocks/?tickerSymbol=${ticker}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`
-        }
     }).catch((error: Error) => {
         console.error(error.message);
     });
