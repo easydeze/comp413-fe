@@ -9,7 +9,6 @@ import {
   Table,
   Paper,
 } from "@mui/material";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 interface Movement {
   symbol: string;

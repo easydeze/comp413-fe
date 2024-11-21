@@ -3,7 +3,7 @@ import Balance from "./Balance";
 import { Stack } from "@mui/system";
 
 export default function Home() {
-  return sessionStorage.getItem("token") != "" ? (
+  return sessionStorage.getItem("token") !== "" ? (
     <>
       <Stack direction="row" spacing={10}>
         <Balance />
