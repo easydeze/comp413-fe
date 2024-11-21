@@ -1,9 +1,12 @@
 
-import { Button, Dialog, DialogTitle, Input, Modal, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogTitle, Input, Modal, TextField, Typography, Unstable_TrapFocus } from "@mui/material";
+
 import { Box, Stack } from "@mui/system";
 import React from "react";
 
-import { buyHttp, sellHttp, Order } from "../../API/Dashboard/BuySellAPI"
+import { Order } from "../../API/Dashboard/BuySellAPI"
+import { buyHttp } from "../../API/Dashboard/BuyAPI"
+import { sellHttp } from "../../API/Dashboard/SellAPI"
 import { getMarketPriceHttp } from "../../API/Dashboard/MarketPriceAPI";
 
 const style = {
@@ -26,9 +29,9 @@ const buttonStyle = {
 export default function BuySell() {
   //STATES
   const [isPreviewShown, setIsPreviewShown] = React.useState(false);
-  const [isErrorModalShown, setIsErrorModalShown] = React.useState(false);
+  const [isConfirmDisabled, setDisableConfirm] = React.useState(false);
   const [isModalShown, setIsModalShown] = React.useState(false);
-  const [errorModalMessage, setErrorModalMessage] = React.useState("");
+  const [modalMessage, setModalMessage] = React.useState("");
   const [mode, setMode] = React.useState("");
   const [ticker, setTicker] = React.useState("");
   const [tickerError, setTickerError] = React.useState(false);
@@ -71,7 +74,6 @@ export default function BuySell() {
       if (typeof r.marketPrice == "number") {
         setTickerError(false)
         marketPrice = r.marketPrice;
-        //alert("Market Price for " + ticker + "is :" + marketPrice)
       } else {
         setTickerError(true)
         marketPrice = 0;
@@ -141,44 +143,50 @@ export default function BuySell() {
       timestamp: Date()
     }
 
+    setDisableConfirm(true)
+
 
     try {
 
       //Request the order
-      const response = mode === "buy" ? await buyHttp(newOrder) : await sellHttp(newOrder);
+      var response  = mode === "buy" ? await buyHttp(newOrder) : await sellHttp(newOrder);
+
       if (response) {
         //Close the preview order modal
         handleClose()
 
         //Show success modal for 5 seconds
+        setModalMessage("Order was created successfully!")
         setIsModalShown(true);
         await timeout(5000)
         setIsModalShown(false);
 
         //Reset the input fields on the page
-        handleReset();
+        //handleReset();
+
 
       } else {
 
-        console.error("ERROR: ")
-
         //Set and Show the error message for 5 seconds
-        setErrorModalMessage("Order failed to be created. Try again.")
-        setIsErrorModalShown(true)
+        setModalMessage("Order failed to be created. Try again.")
+        setIsModalShown(true)
         await timeout(1000)
-        setIsErrorModalShown(false);
+        setIsModalShown(false);
 
       }
+
     } catch (error: any) {
 
       console.error("ERROR: " + error.message)
 
       //Set and Show the error message for 5 seconds
-      setErrorModalMessage(error.message + "\nOrder failed to be created. Try again.")
-      setIsErrorModalShown(true)
+      setModalMessage("Order failed to be created. Try again.")
+      setIsModalShown(true)
       await timeout(1000)
-      setIsErrorModalShown(false);
+      setIsModalShown(false);
 
+    } finally {
+      setDisableConfirm(false)
     }
 
     console.log("Order attempt completed.");
@@ -216,7 +224,8 @@ export default function BuySell() {
 
         </Stack> */}
 
-        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={marketPrice !== 0 ? "" + marketPrice : "Enter Limit Price"} type="number" fullWidth />
+        
+        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={marketPrice !== 0 ? "" + marketPrice : "Enter Limit Price"} type="number" value={marketPrice !== 0 ? marketPrice : null} fullWidth />
 
 
         <h4>Total For Order: ${numStocks * limitPrice}</h4>
@@ -256,29 +265,26 @@ export default function BuySell() {
               Total Price: ${Number(limitPrice) * Number(numStocks)}
             </Typography> */}
           <Stack direction="row">
-            <Button variant="contained" onClick={() => {
-
-
-
+            <Button variant="contained" 
+            disabled={isConfirmDisabled}
+            onClick={() => {
               handleMakeOrder()
 
-            }} autoFocus>Confirm</Button>
-            <Button onClick={handleClose}>Cancel</Button>
+            }} >Confirm</Button>
+            <Button onClick={handleClose} disabled={isConfirmDisabled}>Cancel</Button>
           </Stack>
         </Box>
       </Modal>
 
       <Dialog open={isModalShown}>
         <DialogTitle>
-          {"Order was Successfully Created!"}
+          {modalMessage}
         </DialogTitle>
       </Dialog>
 
-      <Dialog id="error-modal" open={isErrorModalShown}>
-        <DialogTitle>
-          {errorModalMessage}
-        </DialogTitle>
-      </Dialog>
+      
+
+
     </Stack >
   );
 }

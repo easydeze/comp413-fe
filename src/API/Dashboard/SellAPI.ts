@@ -1,9 +1,4 @@
-export interface Order {
-    symbol: string;
-    quantity: number;
-    price: number;
-    timeStamp: string;
-}
+import { Order } from "./BuySellAPI"
 
 
 const token = "Mocktoken"
@@ -16,7 +11,6 @@ const BASE_URL = "https://sellorderhandler-544401150213.us-central1.run.app";
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
-        console.log("JSON: " + options);
         const response = await fetch(`${BASE_URL}${url}`, options);
         console.log(response);
 
@@ -40,21 +34,26 @@ const request = async (url: string, options: RequestInit) => {
 
 
 // Function to make a buy Order request
-export const sellHttp = async (sellOrder : Order) => {
-    const response : Promise<any> = await request(`/sell`, {
+export const sellHttp = async (sellOrder: Order) => {
+    const response: Promise<any> = await request(`/sell`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             'Authorization': token,
         },
-        
 
-        body: JSON.stringify(
-            sellOrder
-        ),
+        body: JSON.stringify({
+            tickerSymbol: sellOrder.tickerSymbol,
+            limitPrice: sellOrder.limitPrice,
+            quantitiy: sellOrder.quantity,
+            timestamp: sellOrder.timestamp,
+        }),
     }).catch((error: Error) => {
-        console.error(error.message);
+        console.error("SELL ERROR: ", error.message);
+        throw error;
     });
+
+
     console.log(response);
     return response;
 };

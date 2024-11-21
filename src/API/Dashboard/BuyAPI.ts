@@ -1,9 +1,4 @@
-export interface Order {
-    symbol: string;
-    quantity: number;
-    price: number;
-    timeStamp: string;
-}
+import { Order } from "./BuySellAPI"
 
 export interface StockMarketPrice {
     tickerSymbol : string;
@@ -20,7 +15,7 @@ const BASE_URL = "https://buysellorderhandler-544401150213.us-central1.run.app";
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
-        const response = await fetch(`${BASE_URL}${url}`, options);
+        const response : Response = await fetch(`${BASE_URL}${url}`, options);
         console.log(response);
 
         // Check if the response is okay (status 200-299)
@@ -51,10 +46,15 @@ export const buyHttp = async (buyOrder : Order) => {
         },
 
         body: JSON.stringify(
-            buyOrder
+            {
+                tickerSymbol: buyOrder.tickerSymbol,
+                limitPrice: buyOrder.limitPrice,
+                quantitiy: buyOrder.quantity,
+                timestamp: buyOrder.timestamp,
+            }
         ),
     }).catch((error: Error) => {
-        console.error(error.message);
+        console.error("BUY ERROR: ", error.message);
         throw error
     });
     console.log(response);
