@@ -38,7 +38,7 @@ const request = async (url: string, options: RequestInit) => {
 
 // Function to make a buy Order request
 export const buyHttp = async (buyOrder : Order) => {
-    const response : Promise<any> = await request(`/buy`, {
+    const response : Promise<any> = await request(`/buyOrderEntry`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

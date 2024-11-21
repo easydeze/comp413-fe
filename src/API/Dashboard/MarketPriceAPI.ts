@@ -1,5 +1,3 @@
-
-
 export interface StockMarketPrice {
     tickerSymbol : string;
     marketPrice : number;
@@ -43,6 +41,7 @@ export const getMarketPriceHttp = async (ticker: string) => {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
+            "Authorization" : token,
         }
         
     }).catch((error: Error) => {

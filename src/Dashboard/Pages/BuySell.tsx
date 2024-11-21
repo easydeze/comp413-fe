@@ -1,25 +1,13 @@
 
-import { Button, CircularProgress, Dialog, DialogTitle, Input, Modal, TextField, Typography, Unstable_TrapFocus } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,TextField, Typography } from "@mui/material";
 
-import { Box, Stack } from "@mui/system";
+import { Stack } from "@mui/system";
 import React from "react";
 
 import { Order } from "../../API/Dashboard/BuySellAPI"
 import { buyHttp } from "../../API/Dashboard/BuyAPI"
 import { sellHttp } from "../../API/Dashboard/SellAPI"
 import { getMarketPriceHttp } from "../../API/Dashboard/MarketPriceAPI";
-
-const style = {
-  position: "absolute" as "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "white",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 
 const buttonStyle = {
@@ -63,7 +51,7 @@ export default function BuySell() {
   };
 
   const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setTicker(event.target.value);
+    setTicker(event.target.value.toString());
 
     setTickerError(false)
 
@@ -149,7 +137,7 @@ export default function BuySell() {
     try {
 
       //Request the order
-      var response  = mode === "buy" ? await buyHttp(newOrder) : await sellHttp(newOrder);
+      var response = mode === "buy" ? await buyHttp(newOrder) : await sellHttp(newOrder);
 
       if (response) {
         //Close the preview order modal
@@ -224,7 +212,7 @@ export default function BuySell() {
 
         </Stack> */}
 
-        
+
         <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={marketPrice !== 0 ? "" + marketPrice : "Enter Limit Price"} type="number" value={marketPrice !== 0 ? marketPrice : null} fullWidth />
 
 
@@ -240,15 +228,18 @@ export default function BuySell() {
         Preview Order
       </Button>
 
-      <Modal
-        open={isPreviewShown}
-        onClose={handleClose}
-        id="preview-order-modal"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Order Summary
-          </Typography>
+      <Dialog 
+      open={isPreviewShown}
+      fullWidth={true}
+      onClose={(_, reason) => {
+        if(reason === 'backdropClick'){
+          setIsPreviewShown(false);
+        }
+      }}>
+        <DialogTitle>
+          Order Summary
+        </DialogTitle>
+        <DialogContent>
           <Typography id="modal-modal-descr-mode" sx={{ mt: 2 }}>
             Order Mode: {mode}
           </Typography>
@@ -261,29 +252,28 @@ export default function BuySell() {
           <Typography id="modal-modal-descr-limitPrice" sx={{ mt: 2 }}>
             Limit Price: ${limitPrice}
           </Typography>
-          {/* <Typography id="modal-modal-descr-marketPrice" sx={{ mt: 2 }}>
-              Total Price: ${Number(limitPrice) * Number(numStocks)}
-            </Typography> */}
-          <Stack direction="row">
-            <Button variant="contained" 
+          <Typography id="modal-modal-descr-limitPrice" sx={{ mt: 2 }}>
+            Total: ${numStocks * limitPrice}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained"
             disabled={isConfirmDisabled}
             onClick={() => {
               handleMakeOrder()
-
             }} >Confirm</Button>
-            <Button onClick={handleClose} disabled={isConfirmDisabled}>Cancel</Button>
-          </Stack>
-        </Box>
-      </Modal>
+          <Button
+            onClick={handleClose}
+            disabled={isConfirmDisabled}>Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog open={isModalShown}>
         <DialogTitle>
           {modalMessage}
         </DialogTitle>
       </Dialog>
-
-      
-
 
     </Stack >
   );
