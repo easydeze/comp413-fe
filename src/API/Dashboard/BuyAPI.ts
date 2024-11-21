@@ -55,7 +55,7 @@ export const buyHttp = async (buyOrder : Order) => {
         ),
     }).catch((error: Error) => {
         console.error("BUY ERROR: ", error.message);
-        throw error
+        
     });
     console.log(response);
     return response;

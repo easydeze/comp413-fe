@@ -50,7 +50,7 @@ export const sellHttp = async (sellOrder: Order) => {
         }),
     }).catch((error: Error) => {
         console.error("SELL ERROR: ", error.message);
-        throw error;
+        
     });
 
 

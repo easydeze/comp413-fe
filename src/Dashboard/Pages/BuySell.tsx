@@ -1,13 +1,22 @@
 
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Input, Modal, TextField, Typography, Unstable_TrapFocus } from "@mui/material";
 
-import { Stack } from "@mui/system";
+import { Box, Stack } from "@mui/system";
 import React from "react";
 
 import { Order } from "../../API/Dashboard/BuySellAPI"
 import { buyHttp } from "../../API/Dashboard/BuyAPI"
 import { sellHttp } from "../../API/Dashboard/SellAPI"
 import { getMarketPriceHttp } from "../../API/Dashboard/MarketPriceAPI";
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  p: 4,
+};
 
 
 const buttonStyle = {
@@ -25,8 +34,7 @@ export default function BuySell() {
   const [tickerError, setTickerError] = React.useState(false);
   const [numStocks, setStockAmount] = React.useState(0);
   const [limitPrice, setLimitPrice] = React.useState(0);
-
-  let marketPrice = 0;
+  const [marketPrice, setMarketPrice] = React.useState(0);
 
   const handleBuyClick = () => {
     setMode("buy");
@@ -51,7 +59,7 @@ export default function BuySell() {
   };
 
   const handleTickerChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-    setTicker(event.target.value.toString());
+    setTicker(event.target.value);
 
     setTickerError(false)
 
@@ -61,10 +69,10 @@ export default function BuySell() {
 
       if (typeof r.marketPrice == "number") {
         setTickerError(false)
-        marketPrice = r.marketPrice;
+        setMarketPrice(r.marketPrice)
       } else {
         setTickerError(true)
-        marketPrice = 0;
+        setMarketPrice(0)
       }
     });
 
@@ -205,16 +213,13 @@ export default function BuySell() {
       <TextField required id="input-buy-stock-amount" autoComplete="false" label="Stock Amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode} type="number" />
 
       <Stack direction="column" spacing={2}>
-        {/* <Stack direction="row"  spacing={{ xs: 1, sm: 2 }} sx={{ justifyContent: 'center', alignItems: 'center' }} >
-        <p>Market Price: {marketPrice}</p>
-        <p>Limit Price: </p>
-        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={marketPrice !== 0 ? ""+marketPrice : "Enter Limit Price"} type="number" fullWidth/>
+        <TextField label="Market Price" value={marketPrice!==0 ? marketPrice : "-"}  slotProps={{
+            input: {
+              readOnly: true,
+            },
+          }}></TextField>
 
-        </Stack> */}
-
-
-        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={marketPrice !== 0 ? "" + marketPrice : "Enter Limit Price"} type="number" value={marketPrice !== 0 ? marketPrice : null} fullWidth />
-
+        <TextField required id="input-limit-price" autoComplete="false" label="Limit Price" onChange={handleLimitPriceChange} placeholder={"Enter Limit Price"} type="number"  fullWidth />
 
         <h4>Total For Order: ${numStocks * limitPrice}</h4>
       </Stack>
@@ -232,7 +237,7 @@ export default function BuySell() {
       open={isPreviewShown}
       fullWidth={true}
       onClose={(_, reason) => {
-        if(reason === 'backdropClick'){
+        if(reason == 'backdropClick'){
           setIsPreviewShown(false);
         }
       }}>
@@ -274,6 +279,7 @@ export default function BuySell() {
           {modalMessage}
         </DialogTitle>
       </Dialog>
+
 
     </Stack >
   );

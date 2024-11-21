@@ -46,7 +46,7 @@ export const getMarketPriceHttp = async (ticker: string) => {
         
     }).catch((error: Error) => {
         console.error("GetMarketPrice ERROR: ", error.message);
-        throw error;
+        
     });
     console.log(response);
     return response;
