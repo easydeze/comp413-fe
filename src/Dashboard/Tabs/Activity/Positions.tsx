@@ -61,11 +61,11 @@ const Positions = () => {
   const totalValues = {
     totalPortfolioValue: positions.reduce(
       (sum, position) => sum + position.totalValue,
-      0,
+      0
     ),
     totalLifetimeReturn: positions.reduce(
       (sum, position) => sum + position.lifetimeReturn,
-      0,
+      0
     ),
     totalLifetimeReturnPercentage:
       (positions.reduce((sum, position) => sum + position.lifetimeReturn, 0) /
@@ -87,9 +87,7 @@ const Positions = () => {
   // }, []);
 
   return (
-    <Stack spacing={2}>
-      <h2>Current Positions</h2>
-
+    <Stack spacing={2} marginTop={5}>
       {/* Summary Cards */}
       <Stack direction="row" spacing={4} sx={{ mb: 2 }}>
         <Paper sx={{ p: 2, minWidth: 200 }}>
