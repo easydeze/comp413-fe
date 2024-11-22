@@ -162,43 +162,7 @@ function OrderRow({ order }: { order: PackagedOrder }) {
 // ];
 
 const OrdersTable = () => {
-  const dummy_orders: PackagedOrder[] = [
-    packageOrder(
-      new Date(Date.now()),
-      "AAPL",
-      "APPLE INC",
-      "CASH",
-      3.6,
-      220.59,
-      -900,
-      90000,
-      new Date(Date.now())
-    ),
-    packageOrder(
-      new Date(Date.now()),
-      "ABC",
-      "APPLE INC",
-      "CASH",
-      3.6,
-      220.59,
-      -900,
-      90000,
-      new Date(Date.now())
-    ),
-    packageOrder(
-      new Date(Date.now()),
-      "DEF",
-      "APPLE INC",
-      "CASH",
-      3.6,
-      220.59,
-      -900,
-      90000,
-      new Date(Date.now())
-    ),
-  ];
-
-  let [orders_list, setOrdersList] = useState(dummy_orders);
+  let [orders_list, setOrdersList] = useState([]);
 
   useEffect(() => {
     (async () => {
