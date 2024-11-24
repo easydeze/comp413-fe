@@ -18,7 +18,8 @@ import { getOrdersHTTP } from "../../../API/Dashboard/OrderAPI";
 //import PackagedOrder from "./PackagedOrder";
 
 interface PackagedOrder {
-  date: Date;
+  placed_date: Date;
+  executed_date: Date;
   symbol: string;
   symbol_desc: string;
   type: string;
@@ -27,31 +28,6 @@ interface PackagedOrder {
   amount: number;
   cash_balance: number;
   settlement_date: Date;
-}
-
-function packageOrder(
-  date: Date,
-  symbol: string,
-  symbol_desc: string,
-  type: string,
-  shares: number,
-  price: number,
-  amount: number,
-  cash_balance: number,
-  settlement_date: Date
-) {
-  const packagedOrder: PackagedOrder = {
-    date: date,
-    symbol: symbol,
-    symbol_desc: symbol_desc,
-    type: type,
-    shares: shares,
-    price: price,
-    amount: amount,
-    cash_balance: cash_balance,
-    settlement_date: settlement_date,
-  };
-  return packagedOrder;
 }
 
 function OrderRow({ order }: { order: PackagedOrder }) {
@@ -65,7 +41,10 @@ function OrderRow({ order }: { order: PackagedOrder }) {
           </IconButton>
         </TableCell>
         <TableCell align="left">
-          {new Date(order.date).toDateString()}
+          {new Date(order.placed_date).toDateString()}
+        </TableCell>
+        <TableCell align="left">
+          {new Date(order.executed_date).toDateString()}
         </TableCell>
         <TableCell align="left">{`YOU BOUGHT ${order.symbol}`}</TableCell>
         <TableCell align="left">{`$${order.shares * order.price}`}</TableCell>
@@ -78,9 +57,15 @@ function OrderRow({ order }: { order: PackagedOrder }) {
               <Table size="small" aria-label="order info">
                 <TableBody>
                   <TableRow>
-                    <TableCell component="th">{"Date: "}</TableCell>
+                    <TableCell component="th">{"Placed Date: "}</TableCell>
                     <TableCell align="left">
-                      {new Date(order.date).toDateString()}
+                      {new Date(order.placed_date).toDateString()}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th">{"Executed Date: "}</TableCell>
+                    <TableCell align="left">
+                      {new Date(order.executed_date).toDateString()}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -125,42 +110,6 @@ function OrderRow({ order }: { order: PackagedOrder }) {
   );
 }
 
-// const orders_list: PackagedOrder[] = [
-//   packageOrder(
-//     new Date(Date.now()),
-//     "AAPL",
-//     "APPLE INC",
-//     "CASH",
-//     3.6,
-//     220.59,
-//     -900,
-//     90000,
-//     new Date(Date.now())
-//   ),
-//   packageOrder(
-//     new Date(Date.now()),
-//     "ABC",
-//     "APPLE INC",
-//     "CASH",
-//     3.6,
-//     220.59,
-//     -900,
-//     90000,
-//     new Date(Date.now())
-//   ),
-//   packageOrder(
-//     new Date(Date.now()),
-//     "DEF",
-//     "APPLE INC",
-//     "CASH",
-//     3.6,
-//     220.59,
-//     -900,
-//     90000,
-//     new Date(Date.now())
-//   ),
-// ];
-
 const OrdersTable = () => {
   let [orders_list, setOrdersList] = useState([]);
 
@@ -189,7 +138,8 @@ const OrdersTable = () => {
           <Table aria-label="orders table">
             <colgroup>
               <col style={{ width: "8%" }} />
-              <col style={{ width: "23%" }} />
+              <col style={{ width: "15%" }} />
+              <col style={{ width: "15%" }} />
               <col style={{ width: "23%" }} />
               <col style={{ width: "23%" }} />
               <col style={{ width: "23%" }} />
@@ -197,7 +147,8 @@ const OrdersTable = () => {
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell align="left">Date</TableCell>
+                <TableCell align="left">Placed Date</TableCell>
+                <TableCell align="left">Executed Date</TableCell>
                 <TableCell align="left">Description</TableCell>
                 <TableCell align="left">Amount</TableCell>
                 <TableCell align="left">Cash Balance</TableCell>
