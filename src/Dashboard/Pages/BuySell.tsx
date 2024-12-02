@@ -212,6 +212,7 @@ export default function BuySell() {
 
       <TextField required id="input-buy-stock-amount" autoComplete="false" label="Stock Amount" onChange={handleStockNumberChange} placeholder={"Number of stocks to " + mode} type="number" />
 
+
       <Stack direction="column" spacing={2}>
         <TextField label="Market Price" value={marketPrice!==0 ? marketPrice : "-"}  slotProps={{
             input: {
