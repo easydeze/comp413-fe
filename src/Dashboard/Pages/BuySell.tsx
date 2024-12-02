@@ -237,7 +237,7 @@ export default function BuySell() {
       open={isPreviewShown}
       fullWidth={true}
       onClose={(_, reason) => {
-        if(reason == 'backdropClick'){
+        if(reason != 'backdropClick'){
           setIsPreviewShown(false);
         }
       }}>
