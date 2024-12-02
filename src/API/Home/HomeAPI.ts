@@ -28,25 +28,24 @@ const request = async (url: string, baseUrl: string, options: RequestInit) => {
 // Function to send balance request
 export const homeBalanceHttp = async (token: string) => {
     const response = await request("/balance", BASE_URL_BAL, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ token: token }),
     });
 
-    console.log(response);
     return response;
 };
 
 // Function to send movements request
 export const homeMovementsHttp = async (token: string) => {
     const response = await request("/movements", BASE_URL_MOV, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ token: token }),
     });
 
     console.log(response);

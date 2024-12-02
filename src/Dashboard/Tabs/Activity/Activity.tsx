@@ -5,10 +5,6 @@ import Transfers from "./Transfers";
 import { Tabs, Tab, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
-interface ActivityProps {
-  token: string;
-}
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -28,7 +24,7 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-const Activity = ({ token }: ActivityProps) => {
+const Activity = () => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newVal: number) => {
@@ -52,7 +48,7 @@ const Activity = ({ token }: ActivityProps) => {
         <Positions />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Transfers token={token} />
+        <Transfers />
       </TabPanel>
     </div>
   );

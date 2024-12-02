@@ -30,8 +30,9 @@ export const transferHttp = async (type: string, amount: number, token: string) 
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ type: type, amount: amount, token: token }),
+        body: JSON.stringify({ type: type, amount: amount }),
     });
 
     console.log(response);
