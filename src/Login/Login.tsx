@@ -23,8 +23,7 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
       const response = await loginHttp(username, password);
 
       if (response && response.token) {
-        const { token } = response;
-        onLogin(username, token);
+        onLogin(username, response.token);
         toggleLogin(false);
         setError("");
       } else {
@@ -42,7 +41,7 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
     }
   };
 
-  return (
+  return !sessionStorage.getItem("token") ? (
     <>
       <main id="login-modal" className="modal">
         <Box className="modal-content">
@@ -95,6 +94,8 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
         </Box>
       </main>
     </>
+  ) : (
+    <></>
   );
 };
 

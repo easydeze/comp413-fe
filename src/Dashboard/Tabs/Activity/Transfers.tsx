@@ -1,5 +1,5 @@
 import React from "react";
-import { transferHttp } from "../../API/Transfers/TransfersAPI";
+import { transferHttp } from "../../../API/Transfers/TransfersAPI";
 import {
   FormControl,
   InputLabel,
@@ -11,16 +11,14 @@ import {
   Stack,
   Button,
 } from "@mui/material";
-import { Popup } from "../Popup";
+import { Popup } from "../../Popup";
 
-interface TransfersProps {
-  token: string;
-}
-
-const Transfers = ({ token }: TransfersProps) => {
+const Transfers = () => {
   const [alignment, setAlignment] = React.useState("deposit");
   const [amount, setAmount] = React.useState(0);
   const [popup, setPopup] = React.useState("");
+  const [neg, setNeg] = React.useState(false);
+  const token = sessionStorage.getItem("token");
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -36,13 +34,16 @@ const Transfers = ({ token }: TransfersProps) => {
   };
 
   const submitTransaction = () => {
-    if (amount > 0) {
+    if (amount > 0 && token) {
       transferHttp(alignment, amount, token);
-      if (alignment == "withdrew") {
+      if (alignment === "withdrew") {
         setPopup(`Withdrew $${amount}.`);
       } else {
         setPopup(`Deposited $${amount}.`);
       }
+      setNeg(false);
+    } else {
+      setNeg(true);
     }
     setAmount(0);
   };
@@ -60,13 +61,13 @@ const Transfers = ({ token }: TransfersProps) => {
           onClose={handleClosePopup}
         />
       )}
-      <h1>Transfers</h1>
       <Stack
         component="form"
         sx={{ width: "25ch" }}
         spacing={2}
         noValidate
         autoComplete="off"
+        marginTop={5}
       >
         <ToggleButtonGroup
           color="primary"
@@ -88,7 +89,13 @@ const Transfers = ({ token }: TransfersProps) => {
             value={amount}
             onChange={handleAmountChange}
           />
-          <FormHelperText>Enter an amount greater than $0.</FormHelperText>
+          {neg ? (
+            <FormHelperText style={{ color: "red" }}>
+              Enter an amount greater than $0.
+            </FormHelperText>
+          ) : (
+            <FormHelperText>Enter an amount greater than $0.</FormHelperText>
+          )}
         </FormControl>
       </Stack>
       <Button variant="contained" onClick={submitTransaction}>
