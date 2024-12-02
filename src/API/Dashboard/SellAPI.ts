@@ -1,13 +1,4 @@
-import { Order } from "./BuySellAPI"
-
-
-const token = "Mocktoken"
-
-//API URL for buy and sell
-//Todo: add handler for buy and seperate one for sell
-const BASE_URL = "https://sellorderhandler-544401150213.us-central1.run.app";
-
-
+const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
@@ -32,28 +23,18 @@ const request = async (url: string, options: RequestInit) => {
     }
 };
 
-
-// Function to make a buy Order request
-export const sellHttp = async (sellOrder: Order) => {
-    const response: Promise<any> = await request(`/sellOrderEntry`, {
+// Function to send login request
+export const buyHttp = async () => {
+    const response = await request("/sell", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': token,
         },
-
+        // Body yet to be modified
         body: JSON.stringify({
-            tickerSymbol: sellOrder.tickerSymbol,
-            limitPrice: sellOrder.limitPrice,
-            quantitiy: sellOrder.quantity,
-            timestamp: sellOrder.timestamp,
+
         }),
-    }).catch((error: Error) => {
-        console.error("SELL ERROR: ", error.message);
-        
     });
-
-
     console.log(response);
     return response;
 };
