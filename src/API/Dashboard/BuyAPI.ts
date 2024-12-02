@@ -1,8 +1,21 @@
-const BASE_URL = "https://us-central1-comp413fe.cloudfunctions.net/Sample";
+import { Order } from "./BuySellAPI"
+
+export interface StockMarketPrice {
+    tickerSymbol : string;
+    marketPrice : number;
+}
+
+const token = "Mocktoken"
+
+//API URL for buy and sell
+//Todo: add handler for buy and seperate one for sell
+const BASE_URL = "https://buysellorderhandler-544401150213.us-central1.run.app";
+
+
 // Helper function to handle requests
 const request = async (url: string, options: RequestInit) => {
     try {
-        const response = await fetch(`${BASE_URL}${url}`, options);
+        const response : Response = await fetch(`${BASE_URL}${url}`, options);
         console.log(response);
 
         // Check if the response is okay (status 200-299)
@@ -23,18 +36,29 @@ const request = async (url: string, options: RequestInit) => {
     }
 };
 
-// Function to send login request
-export const buyHttp = async () => {
-    const response = await request("/buy", {
+// Function to make a buy Order request
+export const buyHttp = async (buyOrder : Order) => {
+    const response : Promise<any> = await request(`/buyOrderEntry`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            'Authorization': token,
         },
-        // Body yet to be modified
-        body: JSON.stringify({
 
-        }),
+        body: JSON.stringify(
+            {
+                tickerSymbol: buyOrder.tickerSymbol,
+                limitPrice: buyOrder.limitPrice,
+                quantitiy: buyOrder.quantity,
+                timestamp: buyOrder.timestamp,
+            }
+        ),
+    }).catch((error: Error) => {
+        console.error("BUY ERROR: ", error.message);
+        
     });
     console.log(response);
     return response;
 };
+
+
