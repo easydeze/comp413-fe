@@ -1,7 +1,7 @@
 import React from "react";
 import ViewHeadlineIcon from "@mui/icons-material/ViewHeadline";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography"; 
+import Typography from "@mui/material/Typography";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -9,13 +9,23 @@ interface HeaderProps {
   // handleLogout: () => void; // Commented out handleLogout prop
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, username /* , handleLogout */ }) => {
+const Header: React.FC<HeaderProps> = ({
+  toggleSidebar,
+  username /* , handleLogout */,
+}) => {
   return (
-    <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px' }}>
+    <header
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "16px",
+      }}
+    >
       <Typography variant="h5">OwlFinance</Typography>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
         {username && (
-          <Typography variant="body1" style={{ marginRight: '10px' }}>
+          <Typography variant="body1" style={{ marginRight: "10px" }}>
             Welcome, {username}!
           </Typography>
         )}
@@ -25,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, username /* , handleLogo
         </Button>
         */}
         <Button
-          style={{ marginRight: '10px' }}
+          style={{ marginRight: "10px" }}
           variant="contained"
           onClick={toggleSidebar}
         >

@@ -2,25 +2,24 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { useState, useEffect } from "react";
 import { homeBalanceHttp } from "../../../API/Home/HomeAPI";
 
-interface BalanceProps {
-  token: string;
-}
-
-export default function Balance({ token }: BalanceProps) {
+export default function Balance() {
   const [xBalances, setXBalances] = useState<number[]>([]);
   const [yBalances, setYBalances] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     const fetchBalances = async () => {
       setIsLoading(true);
       try {
-        const response = await homeBalanceHttp(token);
-        if (response) {
-          setXBalances(response.list1);
-          setYBalances(response.list2);
-          setIsLoading(false);
+        if (token) {
+          const response = await homeBalanceHttp(token);
+          if (response) {
+            setXBalances(response.list1);
+            setYBalances(response.list2);
+            setIsLoading(false);
+          }
         }
       } catch (error) {
         setError(true);
@@ -34,7 +33,7 @@ export default function Balance({ token }: BalanceProps) {
     <div>There is an error getting balance.</div>
   ) : (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <h3>Balance</h3>
+      <h2>Balance</h2>
       <>
         {isLoading ? (
           <div style={{ flex: 1, padding: "10px" }}>
