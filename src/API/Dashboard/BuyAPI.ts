@@ -1,11 +1,5 @@
 import { Order } from "./BuySellAPI"
 
-export interface StockMarketPrice {
-    tickerSymbol : string;
-    marketPrice : number;
-}
-
-const token = "Mocktoken"
 
 //API URL for buy and sell
 //Todo: add handler for buy and seperate one for sell
@@ -37,27 +31,23 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 // Function to make a buy Order request
-export const buyHttp = async (buyOrder : Order) => {
+export const buyHttp = async (buyOrder : Order, token: string) => {
     const response : Promise<any> = await request(`/buyOrderEntry`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': token,
+            "Authorization": `Bearer ${token}`
         },
 
         body: JSON.stringify(
             {
                 tickerSymbol: buyOrder.tickerSymbol,
                 limitPrice: buyOrder.limitPrice,
-                quantitiy: buyOrder.quantity,
+                quantity: buyOrder.quantity,
                 timestamp: buyOrder.timestamp,
             }
         ),
-    }).catch((error: Error) => {
-        console.error("BUY ERROR: ", error.message);
-        
-    });
-    console.log(response);
+    })
     return response;
 };
 
