@@ -10,17 +10,16 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
-    if (username.trim() === "" || password.trim() === "") {
-      setError("Username and password are required");
+    if (username.trim() === "") {
+      setError("Username is required");
       return;
     }
 
     try {
-      const response = await loginHttp(username, password);
+      const response = await loginHttp(username);
 
       if (response && response.token) {
         onLogin(username, response.token);
@@ -30,7 +29,7 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
         setError("Invalid credentials. Please try again.");
       }
     } catch (error: any) {
-      setError("Login failed. Please try again.");
+      setError(error.message || "Login failed. Please try again.");
     }
   };
 
@@ -66,26 +65,14 @@ const Login: React.FC<LoginProps> = ({ toggleLogin, onLogin }) => {
                 }}
                 required
               />
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (e.target.value.trim() !== "") {
-                    setError("");
-                  }
-                }}
-                required
-              />
+
               {error && <Typography color="error">{error}</Typography>}
             </div>
             <div className="button-container">
               <Button
                 id="login-button"
                 onClick={handleLogin}
-                disabled={!username.trim() || !password.trim()}
+                disabled={!username.trim()}
               >
                 Login
               </Button>

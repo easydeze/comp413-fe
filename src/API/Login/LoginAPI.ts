@@ -26,7 +26,7 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 // Function to send login request
-export const loginHttp = async (username: string, password: string) => {
+export const loginHttp = async (username: string) => {
     const response = await request("/login", {
         method: "POST",
         headers: {
@@ -34,8 +34,7 @@ export const loginHttp = async (username: string, password: string) => {
         },
         // Here a username should be directly passed into body [was: {username}]
         body: JSON.stringify({
-            username: username,
-            password: password }),
+            username: username}),
     });
 
     console.log(response);
