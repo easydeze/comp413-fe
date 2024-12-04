@@ -146,17 +146,6 @@ export default function BuySell() {
     <Stack direction="column" spacing={3}>
       <h1>Buy and Sell Stocks</h1>
       <p>As of {Date()}</p>
-      <TextField
-        required
-        id="input-ticker-symbol"
-        label="Ticker Symbol"
-        value={ticker}
-        onChange={handleTickerChange}
-        placeholder="Enter Ticker Symbol"
-        error={tickerError}
-        helperText={tickerError ? "Please enter a ticker symbol" : ""}
-      />
-
       <Stack
         direction="row"
         spacing={{ xs: 1, sm: 2 }}
@@ -187,6 +176,16 @@ export default function BuySell() {
           Sell
         </Button>
       </Stack>
+      <TextField
+        required
+        id="input-ticker-symbol"
+        label="Ticker Symbol"
+        value={ticker}
+        onChange={handleTickerChange}
+        placeholder="Enter Ticker Symbol"
+        error={tickerError}
+        helperText={tickerError ? "Please enter a ticker symbol" : ""}
+      />
 
       <TextField
         required
