@@ -6,15 +6,17 @@ import {
   DialogTitle,
   TextField,
   Typography,
+  Autocomplete, // Added
 } from "@mui/material";
 
 import { Stack } from "@mui/system";
-import React from "react";
+import React, { useEffect } from "react"; // Added useEffect
 
 import { Order } from "../../../API/Dashboard/BuySellAPI";
 import { buyHttp } from "../../../API/Dashboard/BuyAPI";
 import { sellHttp } from "../../../API/Dashboard/SellAPI";
 import { getMarketPriceHttp } from "../../../API/Dashboard/MarketPriceAPI";
+import { getPositionsHttp } from "../../../API/Dashboard/PositionsAPI"; // Added
 
 const buttonStyle = {
   height: "30px",
@@ -32,20 +34,48 @@ export default function BuySell() {
   const [numStocks, setStockAmount] = React.useState(0);
   const [limitPrice, setLimitPrice] = React.useState(0);
   const [marketPrice, setMarketPrice] = React.useState(0);
+  const [positions, setPositions] = React.useState<
+    Array<{
+      // Added
+      symbol: string;
+      quantity: number;
+    }>
+  >([]);
+
+  const token = sessionStorage.getItem("token");
+
+  // Added useEffect for fetching positions
+  useEffect(() => {
+    const fetchPositions = async () => {
+      if (token) {
+        try {
+          const userPositions = await getPositionsHttp(token);
+          setPositions(userPositions);
+        } catch (error) {
+          console.error("Error fetching positions:", error);
+        }
+      }
+    };
+
+    fetchPositions();
+  }, [token]);
 
   const handleBuyClick = () => {
     setMode("buy");
+    setTicker("");
+    setStockAmount(0);
   };
 
   const handleSellClick = () => {
     setMode("sell");
+    setTicker("");
+    setStockAmount(0);
   };
 
   const handleTickerChange = (event: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setTicker(event.target.value);
-
     setTickerError(false);
 
     getMarketPriceHttp(ticker).then(
@@ -57,7 +87,7 @@ export default function BuySell() {
           setTickerError(true);
           setMarketPrice(0);
         }
-      }
+      },
     );
   };
 
@@ -74,7 +104,6 @@ export default function BuySell() {
   };
 
   const handleReset = () => {
-    // Reset states
     setIsPreviewShown(false);
     setLimitPrice(0);
     setMode("");
@@ -83,9 +112,7 @@ export default function BuySell() {
     setTickerError(false);
     setMarketPrice(0);
   };
-
   const handleMakeOrder = async () => {
-    // Disable the confirm button
     setDisableConfirm(true);
 
     const newOrder: Order = {
@@ -97,36 +124,29 @@ export default function BuySell() {
 
     if (token) {
       try {
-        // Request the order
         const response =
           mode === "buy"
             ? await buyHttp(newOrder, token)
             : await sellHttp(newOrder, token);
 
         if (response) {
-          // Show success modal
           setModalMessage("Order was created successfully!");
           setIsModalShown(true);
 
-          // Close preview and reset form
           setTimeout(() => setIsModalShown(false), 1000);
           handleClose();
           handleReset();
         } else {
-          // Show error modal
           setModalMessage("Order failed to be created. Try again.");
           setIsModalShown(true);
           setTimeout(() => setIsModalShown(false), 1000);
         }
       } catch (error) {
         console.error("ERROR:", error);
-
-        // Show error modal
         setModalMessage("Order failed to be created. Try again.");
         setIsModalShown(true);
         setTimeout(() => setIsModalShown(false), 5000);
       } finally {
-        // Re-enable the confirm button
         setDisableConfirm(false);
       }
     }
@@ -134,13 +154,20 @@ export default function BuySell() {
 
   const handleStockNumberChange = (event: { target: { value: string } }) => {
     const result = event.target.value.replace(/\D/g, "");
+    const numValue = Number(result);
 
-    setStockAmount(Number(result));
+    if (mode === "sell") {
+      const position = positions.find((p) => p.symbol === ticker);
+      if (position && numValue > position.quantity) {
+        setStockAmount(position.quantity);
+        return;
+      }
+    }
+
+    setStockAmount(numValue);
   };
 
   const handleClose = () => setIsPreviewShown(false);
-
-  const token = sessionStorage.getItem("token");
 
   return (
     <Stack direction="column" spacing={3}>
@@ -176,16 +203,60 @@ export default function BuySell() {
           Sell
         </Button>
       </Stack>
-      <TextField
-        required
-        id="input-ticker-symbol"
-        label="Ticker Symbol"
-        value={ticker}
-        onChange={handleTickerChange}
-        placeholder="Enter Ticker Symbol"
-        error={tickerError}
-        helperText={tickerError ? "Please enter a ticker symbol" : ""}
-      />
+
+      {mode === "buy" ? (
+        <TextField
+          required
+          id="input-ticker-symbol"
+          label="Ticker Symbol"
+          value={ticker}
+          onChange={handleTickerChange}
+          placeholder="Enter Ticker Symbol"
+          error={tickerError}
+          helperText={tickerError ? "Please enter a ticker symbol" : ""}
+        />
+      ) : mode === "sell" ? (
+        <>
+          <Autocomplete
+            id="sell-ticker-selector"
+            options={positions}
+            getOptionLabel={(option) => option.symbol}
+            value={positions.find((p) => p.symbol === ticker) || null}
+            onChange={(_, newValue) => {
+              setTicker(newValue ? newValue.symbol : "");
+              setStockAmount(0);
+              if (newValue) {
+                getMarketPriceHttp(newValue.symbol).then(
+                  (r: { marketPrice: React.SetStateAction<number> }) => {
+                    if (typeof r.marketPrice == "number") {
+                      setTickerError(false);
+                      setMarketPrice(r.marketPrice);
+                    } else {
+                      setTickerError(true);
+                      setMarketPrice(0);
+                    }
+                  },
+                );
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                required
+                label="Select Stock to Sell"
+                error={tickerError}
+                helperText={tickerError ? "Please select a stock" : ""}
+              />
+            )}
+          />
+          {ticker && (
+            <Typography variant="body2" color="text.secondary">
+              You own:{" "}
+              {positions.find((p) => p.symbol === ticker)?.quantity || 0} shares
+            </Typography>
+          )}
+        </>
+      ) : null}
 
       <TextField
         required
@@ -210,7 +281,7 @@ export default function BuySell() {
               readOnly: true,
             },
           }}
-        ></TextField>
+        />
 
         <TextField
           required
