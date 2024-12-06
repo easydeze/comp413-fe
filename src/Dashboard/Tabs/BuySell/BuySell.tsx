@@ -314,7 +314,7 @@ export default function BuySell() {
       <Stack direction="column" spacing={2}>
         <TextField
           label="Market Price"
-          value={marketPrice !== 0 ? marketPrice : "-"}
+          value={marketPrice !== 0 && ticker !== "" ? marketPrice : "-"}
           slotProps={{
             input: { readOnly: true },
           }}
