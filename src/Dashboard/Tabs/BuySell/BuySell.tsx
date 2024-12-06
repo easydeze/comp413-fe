@@ -95,7 +95,7 @@ export default function BuySell() {
     setTicker(event.target.value);
     setTickerError(false);
 
-    getMarketPriceHttp(ticker).then(
+    getMarketPriceHttp(ticker, token ?? "").then(
       (r: { marketPrice: React.SetStateAction<number> }) => {
         if (typeof r.marketPrice == "number") {
           setTickerError(false);
@@ -104,7 +104,7 @@ export default function BuySell() {
           setTickerError(true);
           setMarketPrice(0);
         }
-      },
+      }
     );
   };
 
@@ -226,12 +226,12 @@ export default function BuySell() {
         <Autocomplete
           id="buy-ticker-selector"
           options={availableStocks}
-          getOptionLabel={(option) => `${option.symbol} - ${option.name}`}
+          getOptionLabel={(option) => `${option.symbol}`}
           value={availableStocks.find((s) => s.symbol === ticker) || null}
           onChange={(_, newValue) => {
             setTicker(newValue ? newValue.symbol : "");
             if (newValue) {
-              getMarketPriceHttp(newValue.symbol).then(
+              getMarketPriceHttp(newValue.symbol, token ?? "").then(
                 (r: { marketPrice: React.SetStateAction<number> }) => {
                   if (typeof r.marketPrice == "number") {
                     setTickerError(false);
@@ -240,7 +240,7 @@ export default function BuySell() {
                     setTickerError(true);
                     setMarketPrice(0);
                   }
-                },
+                }
               );
             }
           }}
@@ -265,7 +265,7 @@ export default function BuySell() {
               setTicker(newValue ? newValue.symbol : "");
               setStockAmount(0);
               if (newValue) {
-                getMarketPriceHttp(newValue.symbol).then(
+                getMarketPriceHttp(newValue.symbol, token ?? "").then(
                   (r: { marketPrice: React.SetStateAction<number> }) => {
                     if (typeof r.marketPrice == "number") {
                       setTickerError(false);
@@ -274,7 +274,7 @@ export default function BuySell() {
                       setTickerError(true);
                       setMarketPrice(0);
                     }
-                  },
+                  }
                 );
               }
             }}
@@ -298,50 +298,41 @@ export default function BuySell() {
       ) : null}
 
       <TextField
-        component="div" // Add this
-        {...({
-          required: true,
-          id: "input-buy-stock-amount",
-          autoComplete: "off",
-          label: "Stock Amount",
-          value: numStocks || "",
-          onChange: handleStockNumberChange,
-          placeholder: "Number of stocks to " + mode,
-          type: "number",
-          InputProps: {
-            inputProps: { min: 0 },
-          },
-        } as TextFieldProps)} // Add type assertion
+        required
+        id="input-buy-stock-amount"
+        autoComplete="false"
+        label="Stock Amount"
+        value={numStocks || ""}
+        onChange={handleStockNumberChange}
+        placeholder={"Number of stocks to " + mode}
+        type="number"
+        InputProps={{
+          inputProps: { min: 0 },
+        }}
       />
 
       <Stack direction="column" spacing={2}>
         <TextField
-          component="div" // Add this
-          {...({
-            label: "Market Price",
-            value: marketPrice !== 0 ? marketPrice : "-",
-            InputProps: {
-              readOnly: true,
-            },
-          } as TextFieldProps)} // Add type assertion
+          label="Market Price"
+          value={marketPrice !== 0 ? marketPrice : "-"}
+          slotProps={{
+            input: { readOnly: true },
+          }}
         />
 
         <TextField
-          component="div" // Add this
-          {...({
-            required: true,
-            id: "input-limit-price",
-            autoComplete: "off",
-            label: "Limit Price",
-            value: limitPrice || "",
-            onChange: handleLimitPriceChange,
-            placeholder: "Enter Limit Price",
-            type: "number",
-            fullWidth: true,
-            InputProps: {
-              inputProps: { min: 0 },
-            },
-          } as TextFieldProps)} // Add type assertion
+          required
+          id="input-limit-price"
+          autoComplete="false"
+          label="Limit Price"
+          value={limitPrice || ""}
+          onChange={handleLimitPriceChange}
+          placeholder={"Enter Limit Price"}
+          type="number"
+          fullWidth
+          InputProps={{
+            inputProps: { min: 0 },
+          }}
         />
 
         <h4>Total For Order: ${numStocks * limitPrice}</h4>

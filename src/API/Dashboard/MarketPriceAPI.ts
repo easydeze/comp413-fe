@@ -8,10 +8,7 @@ export interface StockMarketPrice {
 // Add new interface for stocks
 export interface Stock {
   symbol: string;
-  name: string;
 }
-
-const token = "Mocktoken";
 
 //API URL for buy and sell
 const BASE_URL = "https://getmarketprice-544401150213.us-central1.run.app";
@@ -41,14 +38,14 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 //Function to get market Price of a stock
-export const getMarketPriceHttp = async (ticker: string) => {
+export const getMarketPriceHttp = async (ticker: string, token: string) => {
   const response: Promise<any> = await request(
     `/getMarketPrice?tickersymbol=${ticker}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: token,
+        "Authorization": `Bearer ${token}`
       },
     },
   ).catch((error: Error) => {
@@ -60,16 +57,16 @@ export const getMarketPriceHttp = async (ticker: string) => {
 
 // Add dummy data for available stocks
 const DUMMY_STOCKS: Stock[] = [
-  { symbol: "AAPL", name: "Apple Inc." },
-  { symbol: "GOOGL", name: "Alphabet Inc." },
-  { symbol: "MSFT", name: "Microsoft Corporation" },
-  { symbol: "AMZN", name: "Amazon.com Inc." },
-  { symbol: "META", name: "Meta Platforms Inc." },
-  { symbol: "TSLA", name: "Tesla Inc." },
-  { symbol: "NVDA", name: "NVIDIA Corporation" },
-  { symbol: "JPM", name: "JPMorgan Chase & Co." },
-  { symbol: "WMT", name: "Walmart Inc." },
-  { symbol: "DIS", name: "The Walt Disney Company" },
+  { symbol: "AAPL"},
+  { symbol: "GOOGL"},
+  { symbol: "MSFT" },
+  { symbol: "AMZN" },
+  { symbol: "META" },
+  { symbol: "TSLA"},
+  { symbol: "NVDA" },
+  { symbol: "JPM"},
+  { symbol: "WMT"},
+  { symbol: "DIS" },
 ];
 
 // Add function that returns dummy data
