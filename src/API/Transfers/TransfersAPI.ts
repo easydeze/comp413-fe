@@ -1,6 +1,6 @@
 // URLs for different handlers
 
-const BASE_URL_TRANSFERS = "locahost";
+const BASE_URL_TRANSFERS = "";
 
 // Helper function to handle requests
 // url: specific url to send request to 
