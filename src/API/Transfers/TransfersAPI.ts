@@ -3,6 +3,8 @@
 const BASE_URL_TRANSFERS = "";
 
 // Helper function to handle requests
+// url: specific url to send request to 
+// baseUrl: the base url for the API 
 const request = async (url: string, baseUrl: string, options: RequestInit) => {
     try {
         const response = await fetch(`${baseUrl}${url}`, options);
@@ -25,14 +27,18 @@ const request = async (url: string, baseUrl: string, options: RequestInit) => {
 };
 
 // Function to send balance request
+// type: deposit or withdraw 
 export const transferHttp = async (type: string, amount: number, token: string) => {
-    const response = await request("/transfer", BASE_URL_TRANSFERS, {
+
+    const endpoint = type === "deposit" ? "/portfolios/deposit" : "/portfolios/withdraw";
+
+    const response = await request(endpoint, BASE_URL_TRANSFERS, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ type: type, amount: amount }),
+        body: JSON.stringify({ amount: amount }),
     });
 
     console.log(response);
