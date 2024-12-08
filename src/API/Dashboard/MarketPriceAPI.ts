@@ -40,14 +40,14 @@ const request = async (url: string, options: RequestInit) => {
 //Function to get market Price of a stock
 export const getMarketPriceHttp = async (ticker: string, token: string) => {
   const response: Promise<any> = await request(
-    `/getMarketPrice?tickersymbol=${ticker}`,
+    `/getMarketPrice?tickerSymbol=${ticker}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-    },
+    }
   ).catch((error: Error) => {
     console.error("GetMarketPrice ERROR: ", error.message);
   });
@@ -57,15 +57,15 @@ export const getMarketPriceHttp = async (ticker: string, token: string) => {
 
 // Add dummy data for available stocks
 const DUMMY_STOCKS: Stock[] = [
-  { symbol: "AAPL"},
+  { symbol: "AAPL" },
   { symbol: "NVDA" },
   { symbol: "MSFT" },
   { symbol: "AMZN" },
-  { symbol: "GOOG"},
+  { symbol: "GOOG" },
   { symbol: "META" },
-  { symbol: "TSLA"},
-  { symbol: "TSM"},
-  { symbol: "BRK-B"},
+  { symbol: "TSLA" },
+  { symbol: "TSM" },
+  { symbol: "BRK-B" },
   { symbol: "AVGO" },
 ];
 
