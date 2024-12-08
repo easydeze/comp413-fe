@@ -60,7 +60,7 @@ const Transfers = () => {
     <>
       {popup !== "" && (
         <Popup
-          msg1="Transaction completed."
+          msg1="Processing transaction..."
           msg2={popup}
           onClose={handleClosePopup}
         />
