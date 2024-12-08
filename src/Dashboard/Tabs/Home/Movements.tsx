@@ -8,6 +8,10 @@ import {
   TableContainer,
   Table,
   Paper,
+  Card,
+  Typography,
+  CardContent,
+  CircularProgress,
 } from "@mui/material";
 
 interface Movement {
@@ -58,38 +62,46 @@ export default function Movements() {
   return error ? (
     <div>There is an error getting movements.</div>
   ) : (
-    <>
+    <Card style={{ margin: "20px", padding: "20px" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <h2>Top and bottom movers</h2>
+        <Typography variant="h3" gutterBottom>
+          Top and Bottom Movers
+        </Typography>
         <>
           {isLoading ? (
-            <div>Loading...</div>
+            <div style={{ flex: 1, padding: "10px", textAlign: "center" }}>
+              <CircularProgress />
+            </div>
           ) : (
-            <TableContainer component={Paper}>
-              <Table aria-label="orders table" size="medium">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left">Symbol</TableCell>
-                    <TableCell align="left">Difference</TableCell>
-                    <TableCell align="left">Last Price</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {movements.map((movement, _) => (
+            <CardContent>
+              <TableContainer component={Paper}>
+                <Table aria-label="orders table" size="medium">
+                  <TableHead>
                     <TableRow>
-                      <TableCell align="left">{movement.symbol}</TableCell>
-                      <TableCell align="left">
-                        {DetailedMovement(movement.difference)}
-                      </TableCell>
-                      <TableCell align="left">{movement.last_price}</TableCell>
+                      <TableCell align="left">Symbol</TableCell>
+                      <TableCell align="left">Difference</TableCell>
+                      <TableCell align="left">Last Price</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {movements.map((movement, _) => (
+                      <TableRow>
+                        <TableCell align="left">{movement.symbol}</TableCell>
+                        <TableCell align="left">
+                          {DetailedMovement(movement.difference)}
+                        </TableCell>
+                        <TableCell align="left">
+                          {movement.last_price}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
           )}
         </>
       </div>
-    </>
+    </Card>
   );
 }

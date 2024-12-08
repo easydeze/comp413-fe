@@ -1,8 +1,14 @@
 import { LineChart } from "@mui/x-charts/LineChart";
 import { useState, useEffect } from "react";
-import { homeBalanceHttp } from "../../../API/Home/HomeAPI";
+import {
+  homeBalanceHttp,
+  homeCurrentBalanceHttp,
+} from "../../../API/Home/HomeAPI";
+import { Stack } from "@mui/system";
+import { Card, Typography, CardContent, CircularProgress } from "@mui/material";
 
 export default function Balance() {
+  const [total, setTotal] = useState(0);
   const [xBalances, setXBalances] = useState<number[]>([]);
   const [yBalances, setYBalances] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,9 +21,12 @@ export default function Balance() {
       try {
         if (token) {
           const response = await homeBalanceHttp(token);
-          if (response) {
+          const currentBalance = await homeCurrentBalanceHttp(token);
+          console.log(currentBalance);
+          if (response && currentBalance) {
             setXBalances(response.list1);
             setYBalances(response.list2);
+            setTotal(currentBalance);
             setIsLoading(false);
           }
         }
@@ -32,37 +41,35 @@ export default function Balance() {
   return error || !xBalances || !yBalances ? (
     <div>There is an error getting balance.</div>
   ) : (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <h2>Balance</h2>
-      <>
-        {isLoading ? (
-          <div style={{ flex: 1, padding: "10px" }}>
-            <LineChart
-              xAxis={[{ data: [] }]}
-              series={[
-                {
-                  data: [],
-                },
-              ]}
-              height={400}
-              width={1000}
-            />
-          </div>
-        ) : (
-          <div style={{ flex: 1, padding: "10px" }}>
-            <LineChart
-              xAxis={[{ data: xBalances }]}
-              series={[
-                {
-                  data: yBalances,
-                },
-              ]}
-              height={400}
-              width={1000}
-            />
-          </div>
-        )}
-      </>
-    </div>
+    <Card style={{ margin: "20px", padding: "20px" }}>
+      <Typography variant="h3" gutterBottom>
+        Balance
+      </Typography>
+      <Typography variant="h2" color="primary">
+        ${total}
+      </Typography>
+      <CardContent>
+        <Stack direction="row">
+          {isLoading ? (
+            <div style={{ flex: 1, padding: "10px", textAlign: "center" }}>
+              <CircularProgress />
+            </div>
+          ) : (
+            <div style={{ flex: 1, padding: "10px" }}>
+              <LineChart
+                xAxis={[{ data: xBalances, label: "Date" }]}
+                series={[
+                  {
+                    data: yBalances,
+                  },
+                ]}
+                height={300}
+                width={600}
+              />
+            </div>
+          )}
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
