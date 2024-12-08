@@ -15,7 +15,7 @@ import { Popup } from "../../Popup";
 
 const Transfers = () => {
   const [alignment, setAlignment] = React.useState("deposit");
-  const [amount, setAmount] = React.useState(0);
+  const [amount, setAmount] = React.useState("");
   const [popup, setPopup] = React.useState("");
   const [neg, setNeg] = React.useState(false);
   const token = sessionStorage.getItem("token");
@@ -25,27 +25,31 @@ const Transfers = () => {
     newAlignment: string
   ) => {
     setAlignment(newAlignment);
-    setAmount(0);
+    setAmount("");
   };
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newAmount = Number(event.target.value);
-    setAmount(newAmount);
+    setAmount(event.target.value);
   };
 
-  const submitTransaction = () => {
-    if (amount > 0 && token) {
-      transferHttp(alignment, amount, token);
-      if (alignment === "withdrew") {
-        setPopup(`Withdrew $${amount}.`);
-      } else {
-        setPopup(`Deposited $${amount}.`);
+  const submitTransaction = async () => {
+    if (Number(amount) > 0 && token) {
+      try {
+        await transferHttp(alignment, Number(amount), token);
+        if (alignment === "withdraw") {
+          setPopup(`Withdrew $${amount}.`);
+        } else {
+          setPopup(`Deposited $${amount}.`);
+        }
+      } catch (error) {
+        setPopup("Unable to complete transaction.");
+      } finally {
+        setNeg(false);
       }
-      setNeg(false);
     } else {
       setNeg(true);
     }
-    setAmount(0);
+    setAmount("");
   };
 
   const handleClosePopup = () => {
