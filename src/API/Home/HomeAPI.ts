@@ -4,6 +4,16 @@ const BASE_URL_BAL = "https://balancehandler-544401150213.us-central1.run.app";
 const BASE_URL_CURRBAL = "https://currentbalancehandler-544401150213.us-central1.run.app";
 const BASE_URL_MOV = "https://movementshandler-544401150213.us-central1.run.app";
 
+function toFixed(num: number, fixed: number): number {
+    const re = new RegExp(`^-?\\d+(?:\\.\\d{0,${fixed || -1}})?`);
+    const match = num.toString().match(re);
+    if (!match) {
+        return 0
+    }
+    return Number(match[0]); 
+}
+  
+
 // Helper function to handle requests
 const request = async (url: string, baseUrl: string, options: RequestInit) => {
     try {
@@ -49,7 +59,7 @@ export const homeCurrentBalanceHttp = async (token: string) => {
         },
     });
 
-    return response;
+    return toFixed(response, 2);
 };
 
 // Function to send movements request
@@ -62,6 +72,5 @@ export const homeMovementsHttp = async (token: string) => {
         },
     });
 
-    console.log(response);
     return response;
 };

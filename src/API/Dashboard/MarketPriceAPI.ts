@@ -58,15 +58,15 @@ export const getMarketPriceHttp = async (ticker: string, token: string) => {
 // Add dummy data for available stocks
 const DUMMY_STOCKS: Stock[] = [
   { symbol: "AAPL"},
-  { symbol: "GOOGL"},
+  { symbol: "NVDA" },
   { symbol: "MSFT" },
   { symbol: "AMZN" },
+  { symbol: "GOOG"},
   { symbol: "META" },
   { symbol: "TSLA"},
-  { symbol: "NVDA" },
-  { symbol: "JPM"},
-  { symbol: "WMT"},
-  { symbol: "DIS" },
+  { symbol: "TSM"},
+  { symbol: "BRK-B"},
+  { symbol: "AVGO" },
 ];
 
 // Add function that returns dummy data
