@@ -19,8 +19,8 @@ const Transfers = () => {
   const [amount, setAmount] = React.useState("");
   const [popup, setPopup] = React.useState("");
   const [neg, setNeg] = React.useState(false);
-  const [balance, setBalance] = React.useState(0);
   const token = sessionStorage.getItem("token");
+  const [balance, setBalance] = React.useState(sessionStorage.getItem("balance") ? sessionStorage.getItem("balance") : 0);
 
 
   const handleChange = (
@@ -46,10 +46,13 @@ const Transfers = () => {
         }
 
         const newBalResponse = await homeCurrentBalanceHttp(token)
+
+        //If a balance is obtained, update session info and set new balance
         if (newBalResponse) {
-          setBalance(newBalResponse);
+          sessionStorage.setItem("balance", newBalResponse.toString());
+          setBalance(newBalResponse.toString());
           console.log("New Balance:: " + JSON.stringify(newBalResponse))
-        }
+        } 
 
 
       } catch (error) {
