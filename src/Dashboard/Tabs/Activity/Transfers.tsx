@@ -52,7 +52,7 @@ const Transfers = () => {
           sessionStorage.setItem("balance", newBalResponse.toString());
           setBalance(newBalResponse.toString());
           console.log("New Balance:: " + JSON.stringify(newBalResponse))
-        } 
+        }
 
 
       } catch (error) {
@@ -90,15 +90,20 @@ const Transfers = () => {
         marginTop={5}
       >
 
-        <Stack direction="row" spacing={3} margin={2} alignItems="center">
-          <OutlinedInput startAdornment={<InputAdornment position="start">$</InputAdornment>}
+        <FormControl>
+        
+          <InputLabel htmlFor="current-balance">Current Amount</InputLabel>
+          <OutlinedInput
+            id="current-balance"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Current Amount"
             type="number"
             value={balance}
             slotProps={{
               input: { readOnly: true },
             }}></OutlinedInput>
-        </Stack>
+        
+        </FormControl>
 
         <ToggleButtonGroup
           color="primary"
