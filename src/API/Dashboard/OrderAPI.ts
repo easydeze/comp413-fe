@@ -24,11 +24,12 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 // Function to send login request
-export const getOrdersHTTP = async () => {
+export const getOrdersHTTP = async (token: string) => {
   const response = await request("/orders", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
   console.log(response);

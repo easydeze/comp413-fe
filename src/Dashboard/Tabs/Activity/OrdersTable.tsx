@@ -18,12 +18,14 @@ import { getOrdersHTTP } from "../../../API/Dashboard/OrderAPI";
 //import PackagedOrder from "./PackagedOrder";
 
 interface PackagedOrder {
-  placed_date: Date;
-  executed_date: Date;
+  timestamp: Date;
+  // placed_date: Date;
+  // executed_date: Date;
   symbol: string;
-  symbol_desc: string;
+  // symbol_desc: string;
   type: string;
-  shares: number;
+  // shares: number;
+  quantity: number;
   price: number;
   amount: number;
   cash_balance: number;
@@ -41,13 +43,13 @@ function OrderRow({ order }: { order: PackagedOrder }) {
           </IconButton>
         </TableCell>
         <TableCell align="left">
-          {new Date(order.placed_date).toDateString()}
+          {new Date(order.timestamp).toDateString()}
         </TableCell>
         <TableCell align="left">
-          {new Date(order.executed_date).toDateString()}
+          {new Date(order.timestamp).toDateString()}
         </TableCell>
         <TableCell align="left">{`YOU BOUGHT ${order.symbol}`}</TableCell>
-        <TableCell align="left">{`$${order.shares * order.price}`}</TableCell>
+        <TableCell align="left">{`$${order.quantity * order.price}`}</TableCell>
         <TableCell align="left">{`$${order.cash_balance}`}</TableCell>
       </TableRow>
       <TableRow>
@@ -59,13 +61,13 @@ function OrderRow({ order }: { order: PackagedOrder }) {
                   <TableRow>
                     <TableCell component="th">{"Placed Date: "}</TableCell>
                     <TableCell align="left">
-                      {new Date(order.placed_date).toDateString()}
+                      {new Date(order.timestamp).toDateString()}
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Executed Date: "}</TableCell>
                     <TableCell align="left">
-                      {new Date(order.executed_date).toDateString()}
+                      {new Date(order.timestamp).toDateString()}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -73,32 +75,18 @@ function OrderRow({ order }: { order: PackagedOrder }) {
                     <TableCell align="left">{order.symbol}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th">
-                      {"Symbol description: "}
-                    </TableCell>
-                    <TableCell align="left">To Be Deleted??</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th">{"Type: "}</TableCell>
-                    <TableCell align="left">To Be Deleted</TableCell>
-                  </TableRow>
-                  <TableRow>
                     <TableCell component="th">{"Shares: "}</TableCell>
-                    <TableCell align="left">{order.shares}</TableCell>
+                    <TableCell align="left">{order.quantity}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Price: "}</TableCell>
-                    <TableCell align="left">{order.price}</TableCell>
+                    <TableCell align="left">{`$${order.price}`}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Amount: "}</TableCell>
                     <TableCell align="left">
-                      {order.shares * order.price}
+                      {`$${order.quantity * order.price}`}
                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell component="th">{"Settlement date:"}</TableCell>
-                    <TableCell align="left">To Be Deleted</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -112,18 +100,21 @@ function OrderRow({ order }: { order: PackagedOrder }) {
 
 const OrdersTable = () => {
   let [orders_list, setOrdersList] = useState([]);
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await getOrdersHTTP();
+        if (token) {
+          const response = await getOrdersHTTP(token);
 
-        if (response) {
-          setOrdersList(response);
+          if (response) {
+            setOrdersList(response);
 
-          console.log("Fetched Orders.");
-        } else {
-          console.log("Invalid credentials. Please try again.");
+            console.log("Fetched Orders.");
+          } else {
+            console.log("Invalid credentials. Please try again.");
+          }
         }
       } catch (error: any) {
         console.log("Order fetch failed. Please try again.");
