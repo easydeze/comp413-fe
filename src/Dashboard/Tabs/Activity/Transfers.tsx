@@ -12,13 +12,16 @@ import {
   Button,
 } from "@mui/material";
 import { Popup } from "../../Popup";
+import { homeCurrentBalanceHttp } from "../../../API/Home/HomeAPI";
 
 const Transfers = () => {
   const [alignment, setAlignment] = React.useState("deposit");
   const [amount, setAmount] = React.useState("");
   const [popup, setPopup] = React.useState("");
   const [neg, setNeg] = React.useState(false);
+  const [balance, setBalance] = React.useState(0);
   const token = sessionStorage.getItem("token");
+
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -41,6 +44,14 @@ const Transfers = () => {
         } else {
           setPopup(`Deposited $${amount}.`);
         }
+
+        const newBalResponse = await homeCurrentBalanceHttp(token)
+        if (newBalResponse) {
+          setBalance(newBalResponse);
+          console.log("New Balance:: " + JSON.stringify(newBalResponse))
+        }
+
+
       } catch (error) {
         setPopup("Unable to complete transaction.");
       } finally {
@@ -65,14 +76,27 @@ const Transfers = () => {
           onClose={handleClosePopup}
         />
       )}
+
+
       <Stack
         component="form"
-        sx={{ width: "25ch" }}
+        //sx={{ width: "25ch" }}
         spacing={2}
         noValidate
         autoComplete="off"
         marginTop={5}
       >
+
+        <Stack direction="row" spacing={3} margin={2} alignItems="center">
+          <OutlinedInput startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            label="Current Amount"
+            type="number"
+            value={balance}
+            slotProps={{
+              input: { readOnly: true },
+            }}></OutlinedInput>
+        </Stack>
+
         <ToggleButtonGroup
           color="primary"
           value={alignment}
