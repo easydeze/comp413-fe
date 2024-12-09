@@ -95,17 +95,15 @@ export default function BuySell() {
     setTicker(event.target.value);
     setTickerError(false);
 
-    getMarketPriceHttp(ticker, token ?? "").then(
-      (r: { marketPrice: React.SetStateAction<number> }) => {
-        if (typeof r.marketPrice == "number") {
-          setTickerError(false);
-          setMarketPrice(r.marketPrice);
-        } else {
-          setTickerError(true);
-          setMarketPrice(0);
-        }
+    getMarketPriceHttp(ticker, token ?? "").then((r) => {
+      if (typeof r.close == "number") {
+        setTickerError(false);
+        setMarketPrice(r.close);
+      } else {
+        setTickerError(true);
+        setMarketPrice(0);
       }
-    );
+    });
   };
 
   const handleLimitPriceChange = (event: {
@@ -231,17 +229,15 @@ export default function BuySell() {
           onChange={(_, newValue) => {
             setTicker(newValue ? newValue.symbol : "");
             if (newValue) {
-              getMarketPriceHttp(newValue.symbol, token ?? "").then(
-                (r: { marketPrice: React.SetStateAction<number> }) => {
-                  if (typeof r.marketPrice == "number") {
-                    setTickerError(false);
-                    setMarketPrice(r.marketPrice);
-                  } else {
-                    setTickerError(true);
-                    setMarketPrice(0);
-                  }
+              getMarketPriceHttp(newValue.symbol, token ?? "").then((r) => {
+                if (typeof r.close == "number") {
+                  setTickerError(false);
+                  setMarketPrice(r.close);
+                } else {
+                  setTickerError(true);
+                  setMarketPrice(0);
                 }
-              );
+              });
             }
           }}
           renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
@@ -265,17 +261,15 @@ export default function BuySell() {
               setTicker(newValue ? newValue.symbol : "");
               setStockAmount(0);
               if (newValue) {
-                getMarketPriceHttp(newValue.symbol, token ?? "").then(
-                  (r: { marketPrice: React.SetStateAction<number> }) => {
-                    if (typeof r.marketPrice == "number") {
-                      setTickerError(false);
-                      setMarketPrice(r.marketPrice);
-                    } else {
-                      setTickerError(true);
-                      setMarketPrice(0);
-                    }
+                getMarketPriceHttp(newValue.symbol, token ?? "").then((r) => {
+                  if (typeof r.close == "number") {
+                    setTickerError(false);
+                    setMarketPrice(r.close);
+                  } else {
+                    setTickerError(true);
+                    setMarketPrice(0);
                   }
-                );
+                });
               }
             }}
             renderInput={(params: TextFieldProps) => (
