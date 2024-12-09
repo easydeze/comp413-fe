@@ -46,7 +46,12 @@ export const homeBalanceHttp = async (token: string) => {
         },
     });
 
-    return response;
+    var newTimestamps = response.timestamps.map((timestamp: string) => new Date(timestamp))
+
+    return {
+        timestamps: newTimestamps,
+        balances: response.balances
+    };
 };
 
 // Function to send current balance request
@@ -71,5 +76,6 @@ export const homeMovementsHttp = async (token: string) => {
             "Authorization": `Bearer ${token}`
         },
     });
+
     return response;
 };

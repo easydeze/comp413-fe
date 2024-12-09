@@ -9,8 +9,8 @@ import { Card, Typography, CardContent, CircularProgress } from "@mui/material";
 
 export default function Balance() {
   const [total, setTotal] = useState(0);
-  const [xBalances, setXBalances] = useState<number[]>([]);
-  const [yBalances, setYBalances] = useState<number[]>([]);
+  const [timestamps, setTimestamps] = useState<Date[]>([]);
+  const [balances, setBalances] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const token = sessionStorage.getItem("token");
@@ -24,8 +24,8 @@ export default function Balance() {
           const currentBalance = await homeCurrentBalanceHttp(token);
           console.log(currentBalance);
           if (response && currentBalance) {
-            setXBalances(response.list1);
-            setYBalances(response.list2);
+            setTimestamps(response.timestamps);
+            setBalances(response.balances);
             setTotal(currentBalance);
 
             //Add the balance to the session storage
@@ -41,7 +41,7 @@ export default function Balance() {
     fetchBalances();
   }, [token]);
 
-  return error || !xBalances || !yBalances ? (
+  return error || !timestamps || !balances ? (
     <div>There is an error getting balance.</div>
   ) : (
     <Card style={{ margin: "20px", padding: "20px" }}>
@@ -60,10 +60,16 @@ export default function Balance() {
           ) : (
             <div style={{ flex: 1, padding: "10px" }}>
               <LineChart
-                xAxis={[{ data: xBalances, label: "Date" }]}
+                xAxis={[
+                  {
+                    data: timestamps,
+                    label: "Date",
+                    valueFormatter: (value) => new Date(value).toLocaleString(),
+                  },
+                ]}
                 series={[
                   {
-                    data: yBalances,
+                    data: balances,
                   },
                 ]}
                 height={300}
