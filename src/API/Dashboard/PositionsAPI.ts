@@ -1,5 +1,5 @@
 // src/API/Dashboard/PositionsAPI.ts
-const BASE_URL = "https://positionshandler-544401150213.us-central1.run.app";
+const BASE_URL = "https://positionhandler-544401150213.us-central1.run.app";
 
 const request = async (url: string, options: RequestInit) => {
   try {
@@ -23,13 +23,13 @@ const request = async (url: string, options: RequestInit) => {
 };
 
 export const getPositionsHttp = async (token: string) => {
-  const response = await request("/positions", {
+  const response = await request("/position", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
-
+  console.log("RESPONSE: ", response)
   return response;
 };

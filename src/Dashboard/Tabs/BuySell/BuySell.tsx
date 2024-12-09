@@ -28,7 +28,6 @@ const buttonStyle = {
 };
 
 export default function BuySell() {
-  //STATES
   const [isPreviewShown, setIsPreviewShown] = React.useState(false);
   const [isConfirmDisabled, setDisableConfirm] = React.useState(false);
   const [isModalShown, setIsModalShown] = React.useState(false);
@@ -87,23 +86,6 @@ export default function BuySell() {
     setMode("sell");
     setTicker("");
     setStockAmount(0);
-  };
-
-  const handleTickerChange = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setTicker(event.target.value);
-    setTickerError(false);
-
-    getMarketPriceHttp(ticker, token ?? "").then((r) => {
-      if (typeof r.close == "number") {
-        setTickerError(false);
-        setMarketPrice(r.close);
-      } else {
-        setTickerError(true);
-        setMarketPrice(0);
-      }
-    });
   };
 
   const handleLimitPriceChange = (event: {
