@@ -53,6 +53,7 @@ export default function Movements() {
         }
       } catch (error) {
         setError(true);
+        //console.error("Error getting movements")
       }
     };
 
@@ -60,7 +61,17 @@ export default function Movements() {
   }, [token]);
 
   return error ? (
-    <div>There is an error getting movements.</div>
+    // <div>There is an error getting movements.</div>
+    <Card style={{ margin: "20px", padding: "20px" }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <Typography variant="h3" gutterBottom>
+          Atempting to get top movers. Loading...
+        </Typography>
+            <div style={{ flex: 1, padding: "10px", textAlign: "center" }}>
+              <CircularProgress />
+            </div>
+      </div>
+    </Card>
   ) : (
     <Card style={{ margin: "20px", padding: "20px" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
