@@ -4,6 +4,7 @@ import Positions from "./Positions";
 import Transfers from "./Transfers";
 import { Tabs, Tab, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import ExecutedOrders from "./ExecutedOrders";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,7 +36,8 @@ const Activity = () => {
     <div>
       <Box>
         <Tabs value={value} onChange={handleChange} aria-label="activity tabs">
-          <Tab label="Orders" />
+          <Tab label="Pending Orders" />
+          <Tab label="Executed Orders" />
           <Tab label="Positions" />
           <Tab label="Transfers" />
         </Tabs>
@@ -45,9 +47,12 @@ const Activity = () => {
         <Orders />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Positions />
+        <ExecutedOrders />
       </TabPanel>
       <TabPanel value={value} index={2}>
+        <Positions />
+      </TabPanel>
+      <TabPanel value={value} index={3}>
         <Transfers />
       </TabPanel>
     </div>

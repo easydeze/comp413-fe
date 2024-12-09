@@ -14,25 +14,25 @@ import {
 import React, { useState, useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandMore";
-import { getOrdersHTTP } from "../../../API/Dashboard/OrderAPI";
+import { getExecutedOrdersHTTP } from "../../../API/Dashboard/ExecutedOrderAPI";
 //import PackagedOrder from "./PackagedOrder";
 
-interface PackagedOrder {
+interface PackagedExecOrder {
   timestamp: Date;
   // placed_date: Date;
   // executed_date: Date;
-  symbol: string;
+  stockSymbol: string;
   // symbol_desc: string;
-  type: string;
+  transactionType: string;
   // shares: number;
-  quantity: number;
-  price: number;
+  numShares: number;
+  sharePrice: number;
   amount: number;
   cash_balance: number;
   settlement_date: Date;
 }
 
-function OrderRow({ order }: { order: PackagedOrder }) {
+function ExecOrderRow({ order }: { order: PackagedExecOrder }) {
   const [status, setStatus] = useState(false);
   return (
     <React.Fragment>
@@ -46,10 +46,14 @@ function OrderRow({ order }: { order: PackagedOrder }) {
           {new Date(order.timestamp).toDateString()}
         </TableCell>
         <TableCell align="left">
-          {(order.type === "buy" && `YOU BOUGHT ${order.symbol} (PENDING)`) ||
-            (order.type === "sell" && `YOU SOLD ${order.symbol} (PENDING)`)}
+          {(order.transactionType === "buy" &&
+            `YOU BOUGHT ${order.stockSymbol} (EXECUTED)`) ||
+            (order.transactionType === "sell" &&
+              `YOU SOLD ${order.stockSymbol} (EXECUTED)`)}
         </TableCell>
-        <TableCell align="left">{`$${order.quantity * order.price}`}</TableCell>
+        <TableCell align="left">{`$${
+          order.numShares * order.sharePrice
+        }`}</TableCell>
         {/* <TableCell align="left">{`$${order.cash_balance}`}</TableCell> */}
       </TableRow>
       <TableRow>
@@ -65,27 +69,27 @@ function OrderRow({ order }: { order: PackagedOrder }) {
                     </TableCell>
                   </TableRow>
                   {/* <TableRow>
-                    <TableCell component="th">{"Executed Date: "}</TableCell>
-                    <TableCell align="left">
-                      {new Date(order.timestamp).toDateString()}
-                    </TableCell>
-                  </TableRow> */}
+                      <TableCell component="th">{"Executed Date: "}</TableCell>
+                      <TableCell align="left">
+                        {new Date(order.timestamp).toDateString()}
+                      </TableCell>
+                    </TableRow> */}
                   <TableRow>
                     <TableCell component="th">{"Symbol: "}</TableCell>
-                    <TableCell align="left">{order.symbol}</TableCell>
+                    <TableCell align="left">{order.stockSymbol}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Shares: "}</TableCell>
-                    <TableCell align="left">{order.quantity}</TableCell>
+                    <TableCell align="left">{order.numShares}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Price: "}</TableCell>
-                    <TableCell align="left">{`$${order.price}`}</TableCell>
+                    <TableCell align="left">{`$${order.sharePrice}`}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th">{"Amount: "}</TableCell>
                     <TableCell align="left">
-                      {`$${order.quantity * order.price}`}
+                      {`$${order.numShares * order.sharePrice}`}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -98,7 +102,7 @@ function OrderRow({ order }: { order: PackagedOrder }) {
   );
 }
 
-const OrdersTable = () => {
+const ExecutedOrdersTable = () => {
   let [orders_list, setOrdersList] = useState([]);
   const token = sessionStorage.getItem("token");
 
@@ -106,18 +110,18 @@ const OrdersTable = () => {
     (async () => {
       try {
         if (token) {
-          const response = await getOrdersHTTP(token);
+          const response = await getExecutedOrdersHTTP(token);
 
           if (response) {
             setOrdersList(response);
 
-            console.log("Fetched Orders.");
+            console.log("Fetched Executed Orders.");
           } else {
             console.log("Invalid credentials. Please try again.");
           }
         }
       } catch (error: any) {
-        console.log("Order fetch failed. Please try again.");
+        console.log("Executed Order fetch failed. Please try again.");
       }
     })();
   }, []);
@@ -126,7 +130,7 @@ const OrdersTable = () => {
     <div>
       <Stack marginTop={5}>
         <TableContainer component={Paper}>
-          <Table aria-label="orders table">
+          <Table aria-label="executed-orders-table">
             <colgroup>
               <col style={{ width: "10%" }} />
               {/* <col style={{ width: "15%" }} /> */}
@@ -138,7 +142,7 @@ const OrdersTable = () => {
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell align="left">Placed Date</TableCell>
+                <TableCell align="left">Executed Date</TableCell>
                 {/* <TableCell align="left">Executed Date</TableCell> */}
                 <TableCell align="left">Description</TableCell>
                 <TableCell align="left">Amount</TableCell>
@@ -147,7 +151,7 @@ const OrdersTable = () => {
             </TableHead>
             <TableBody>
               {orders_list.map((order) => (
-                <OrderRow order={order} />
+                <ExecOrderRow order={order} />
               ))}
             </TableBody>
           </Table>
@@ -157,4 +161,4 @@ const OrdersTable = () => {
   );
 };
 
-export default OrdersTable;
+export default ExecutedOrdersTable;
