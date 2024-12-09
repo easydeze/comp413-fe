@@ -15,9 +15,9 @@ import {
 } from "@mui/material";
 
 interface Movement {
-  symbol: string;
+  ticker: string;
   difference: number;
-  last_price: number;
+  yesterdayPrice: number;
 }
 
 const DetailedMovement = (difference: number) => {
@@ -47,7 +47,7 @@ export default function Movements() {
         if (token) {
           const response = await homeMovementsHttp(token);
           if (response) {
-            setMovements(response.movements);
+            setMovements(response.changes);
             setIsLoading(false);
           }
         }
@@ -86,12 +86,12 @@ export default function Movements() {
                   <TableBody>
                     {movements.map((movement, _) => (
                       <TableRow>
-                        <TableCell align="left">{movement.symbol}</TableCell>
+                        <TableCell align="left">{movement.ticker}</TableCell>
                         <TableCell align="left">
                           {DetailedMovement(movement.difference)}
                         </TableCell>
                         <TableCell align="left">
-                          {movement.last_price}
+                          {movement.yesterdayPrice}
                         </TableCell>
                       </TableRow>
                     ))}

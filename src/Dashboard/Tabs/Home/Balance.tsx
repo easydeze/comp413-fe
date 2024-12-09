@@ -28,7 +28,6 @@ export default function Balance() {
             setYBalances(response.list2);
             setTotal(currentBalance);
 
-
             //Add the balance to the session storage
             sessionStorage.setItem("balance", currentBalance.toString());
             setIsLoading(false);

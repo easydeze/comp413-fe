@@ -59,7 +59,7 @@ export const homeCurrentBalanceHttp = async (token: string) => {
         },
     });
 
-    return toFixed(response, 2);
+    return toFixed(response.balance, 2);
 };
 
 // Function to send movements request
@@ -71,6 +71,5 @@ export const homeMovementsHttp = async (token: string) => {
             "Authorization": `Bearer ${token}`
         },
     });
-
     return response;
 };
