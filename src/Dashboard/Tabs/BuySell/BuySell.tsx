@@ -127,7 +127,7 @@ export default function BuySell() {
             ? await buyHttp(newOrder, token)
             : await sellHttp(newOrder, token);
 
-        if (response) {
+        if (response.id) {
           setModalMessage("Order was created successfully!");
           setIsModalShown(true);
 
