@@ -63,7 +63,7 @@ function ExecOrderRow({ order }: { order: PackagedExecOrder }) {
               <Table size="small" aria-label="order info">
                 <TableBody>
                   <TableRow>
-                    <TableCell component="th">{"Placed Date: "}</TableCell>
+                    <TableCell component="th">{"Executed Date: "}</TableCell>
                     <TableCell align="left">
                       {new Date(order.timestamp).toDateString()}
                     </TableCell>
