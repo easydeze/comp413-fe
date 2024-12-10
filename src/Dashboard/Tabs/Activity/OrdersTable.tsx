@@ -15,6 +15,9 @@ import React, { useState, useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandMore";
 import { getOrdersHTTP } from "../../../API/Dashboard/OrderAPI";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { cancelOrderHTTP } from "../../../API/Dashboard/CancelOrderAPI";
 //import PackagedOrder from "./PackagedOrder";
 
 interface PackagedOrder {
@@ -24,6 +27,7 @@ interface PackagedOrder {
   symbol: string;
   // symbol_desc: string;
   type: string;
+  id: string;
   // shares: number;
   quantity: number;
   price: number;
@@ -34,9 +38,81 @@ interface PackagedOrder {
 
 function OrderRow({ order }: { order: PackagedOrder }) {
   const [status, setStatus] = useState(false);
+  const token2 = sessionStorage.getItem("token");
+
+  const deleteOrderHandler = async (orderId: string) => {
+    (async () => {
+      try {
+        if (token2) {
+          const response = await cancelOrderHTTP(token2, orderId);
+
+          if (response !== null) {
+            if (response === true) {
+              console.log("Canceled Order.");
+              let row1 = document.getElementById(`order-row1-${order.id}`);
+              if (row1 !== null) {
+                row1.style.display = "none";
+              }
+
+              let row2 = document.getElementById(`order-row2-${order.id}`);
+              if (row2 !== null) {
+                row2.style.display = "none";
+              }
+
+              let delete_button = document.getElementById(
+                `delete-order-${order.id}`
+              );
+              if (delete_button !== null) {
+                delete_button.style.display = "none";
+              }
+
+              let delete_text = document.getElementById(
+                `delete-order-text-${order.id}`
+              );
+              if (delete_text !== null) {
+                delete_text.innerHTML = "Order Has Been Canceled.";
+                delete_text.style.display = "block";
+              }
+              // const response2 = await getOrdersHTTP(token2);
+
+              // if (response2) {
+              //   setOrdersList(response2);
+
+              //   console.log("Fetched Orders.");
+              // } else {
+              //   console.log("Invalid credentials. Please try again.");
+              // }
+            } else if (response === false) {
+              console.log("Order could not be canceled.");
+
+              let delete_button = document.getElementById(
+                `delete-order-${order.id}`
+              );
+              if (delete_button !== null) {
+                delete_button.style.display = "none";
+              }
+
+              let delete_text = document.getElementById(
+                `delete-order-text-${order.id}`
+              );
+              if (delete_text !== null) {
+                delete_text.innerHTML = "Order Could Not Be Canceled.";
+                delete_text.style.display = "block";
+              }
+            }
+          } else {
+            console.log("Invalid credentials. Please try again.");
+          }
+        }
+      } catch (error: any) {
+        console.log("Order cancel fetch failed. Please try again.");
+      }
+    })();
+  };
+
   return (
     <React.Fragment>
-      <TableRow>
+      <TableRow id={`order-row1-${order.id}`}>
         <TableCell>
           <IconButton aria-label="expand" onClick={() => setStatus(!status)}>
             {status ? <ExpandMoreIcon /> : <ExpandLessIcon />}
@@ -50,9 +126,24 @@ function OrderRow({ order }: { order: PackagedOrder }) {
             (order.type === "sell" && `YOU SOLD ${order.symbol} (PENDING)`)}
         </TableCell>
         <TableCell align="left">{`$${order.quantity * order.price}`}</TableCell>
+        <TableCell align="left">
+          <Button
+            id={`delete-order-${order.id}`}
+            key="order."
+            startIcon={<DeleteIcon />}
+            onClick={(e) => {
+              deleteOrderHandler(order.id);
+            }}
+          >
+            Cancel Order
+          </Button>
+          <Box id={`delete-order-text-${order.id}`} display={"none"}>
+            Order Could Not Be Canceled.
+          </Box>
+        </TableCell>
         {/* <TableCell align="left">{`$${order.cash_balance}`}</TableCell> */}
       </TableRow>
-      <TableRow>
+      <TableRow id={`order-row2-${order.id}`}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
           <Collapse in={status} timeout="auto" unmountOnExit>
             <Box>
@@ -130,10 +221,10 @@ const OrdersTable = () => {
             <colgroup>
               <col style={{ width: "10%" }} />
               {/* <col style={{ width: "15%" }} /> */}
-              <col style={{ width: "30%" }} />
-              <col style={{ width: "30%" }} />
-              {/* <col style={{ width: "23%" }} /> */}
-              <col style={{ width: "30%" }} />
+              <col style={{ width: "25%" }} />
+              <col style={{ width: "25%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "20%" }} />
             </colgroup>
             <TableHead>
               <TableRow>
