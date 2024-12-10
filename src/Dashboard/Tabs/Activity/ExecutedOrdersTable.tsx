@@ -15,16 +15,11 @@ import React, { useState, useEffect } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandMore";
 import { getExecutedOrdersHTTP } from "../../../API/Dashboard/ExecutedOrderAPI";
-//import PackagedOrder from "./PackagedOrder";
 
 interface PackagedExecOrder {
   timestamp: Date;
-  // placed_date: Date;
-  // executed_date: Date;
   stockSymbol: string;
-  // symbol_desc: string;
   transactionType: string;
-  // shares: number;
   numShares: number;
   sharePrice: number;
   amount: number;
@@ -43,9 +38,6 @@ function ExecOrderRow({ order }: { order: PackagedExecOrder }) {
           </IconButton>
         </TableCell>
         <TableCell align="left">
-          {new Date(order.timestamp).toDateString()}
-        </TableCell>
-        <TableCell align="left">
           {(order.transactionType === "buy" &&
             `YOU BOUGHT ${order.stockSymbol} (EXECUTED)`) ||
             (order.transactionType === "sell" &&
@@ -54,7 +46,6 @@ function ExecOrderRow({ order }: { order: PackagedExecOrder }) {
         <TableCell align="left">{`$${
           order.numShares * order.sharePrice
         }`}</TableCell>
-        {/* <TableCell align="left">{`$${order.cash_balance}`}</TableCell> */}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
@@ -62,18 +53,6 @@ function ExecOrderRow({ order }: { order: PackagedExecOrder }) {
             <Box>
               <Table size="small" aria-label="order info">
                 <TableBody>
-                  <TableRow>
-                    <TableCell component="th">{"Executed Date: "}</TableCell>
-                    <TableCell align="left">
-                      {new Date(order.timestamp).toDateString()}
-                    </TableCell>
-                  </TableRow>
-                  {/* <TableRow>
-                      <TableCell component="th">{"Executed Date: "}</TableCell>
-                      <TableCell align="left">
-                        {new Date(order.timestamp).toDateString()}
-                      </TableCell>
-                    </TableRow> */}
                   <TableRow>
                     <TableCell component="th">{"Symbol: "}</TableCell>
                     <TableCell align="left">{order.stockSymbol}</TableCell>
@@ -132,21 +111,14 @@ const ExecutedOrdersTable = () => {
         <TableContainer component={Paper}>
           <Table aria-label="executed-orders-table">
             <colgroup>
-              <col style={{ width: "10%" }} />
-              {/* <col style={{ width: "15%" }} /> */}
               <col style={{ width: "30%" }} />
-              <col style={{ width: "30%" }} />
-              {/* <col style={{ width: "23%" }} /> */}
               <col style={{ width: "30%" }} />
             </colgroup>
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell align="left">Executed Date</TableCell>
-                {/* <TableCell align="left">Executed Date</TableCell> */}
                 <TableCell align="left">Description</TableCell>
                 <TableCell align="left">Amount</TableCell>
-                {/* <TableCell align="left">Cash Balance</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>

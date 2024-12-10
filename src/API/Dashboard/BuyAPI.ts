@@ -33,22 +33,26 @@ const request = async (url: string, options: RequestInit) => {
 // Function to make a buy Order request
 export const buyHttp = async (buyOrder : Order, token: string) => {
     const response : Promise<any> = await request(`/buyOrderEntry`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
 
-        body: JSON.stringify(
-            {
-                tickerSymbol: buyOrder.tickerSymbol,
-                limitPrice: buyOrder.limitPrice,
-                quantity: buyOrder.quantity,
-                timestamp: buyOrder.timestamp,
-            }
-        ),
-    })
-    return response;
+            body: JSON.stringify(
+                {
+                    tickerSymbol: buyOrder.tickerSymbol,
+                    limitPrice: buyOrder.limitPrice,
+                    quantity: buyOrder.quantity,
+                    timestamp: buyOrder.timestamp,
+                }
+            ),
+        }).catch((error: Error) => {
+        console.error("BUY ERROR: ", error.message);
+        throw error;
+      });
+
+      return response;
 };
 
 
