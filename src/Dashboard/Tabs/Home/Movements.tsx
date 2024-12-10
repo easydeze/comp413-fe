@@ -38,23 +38,38 @@ export default function Movements() {
   let [movements, setMovements] = useState<Movement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [message, setMessage] = useState("");
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     setIsLoading(true);
     const fetchMovements = async () => {
-      try {
-        if (token) {
-          const response = await homeMovementsHttp(token);
-          if (response) {
-            setMovements(response.changes);
-            setIsLoading(false);
+      var completed  = false;
+      for (var i=0; i<3; i++) {
+        try {
+          if (token) {
+            const response = await homeMovementsHttp(token);
+            if (response) {
+              setMovements(response.changes);
+              setIsLoading(false);
+            }
           }
+          completed = true;
+          break;
+        } catch (error) {
+          setError(true);
+          setMessage("Attempting to get movements. Loading...")
+          console.error("Error getting movements. Attempt #" + i)
         }
-      } catch (error) {
-        setError(true);
-        //console.error("Error getting movements")
       }
+
+      
+      if(!completed){
+        setMessage("Failed to obtain movements");
+      } else {
+        setError(false);
+      }
+      setIsLoading(false);
     };
 
     fetchMovements();
@@ -65,11 +80,20 @@ export default function Movements() {
     <Card style={{ margin: "20px", padding: "20px" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Typography variant="h3" gutterBottom>
-          Atempting to get top movers. Loading...
+          {message}
         </Typography>
+        {/* <div style={{ flex: 1, padding: "10px", textAlign: "center" }}>
+          <CircularProgress />
+        </div> */}
+        {isLoading ? (
             <div style={{ flex: 1, padding: "10px", textAlign: "center" }}>
               <CircularProgress />
             </div>
+          ) : (
+            <div style={{ flex: 1, padding: "10px", textAlign: "center" }}>
+              {/* Nothing shoudl be displayed */}
+            </div>
+          )}
       </div>
     </Card>
   ) : (
